@@ -52,7 +52,7 @@ void main() {
         .speed = 10,
         .font = sfFont_createFromFile("Font/RetroGaming.ttf"),
     };
-    
+    int p;
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
         while (sfRenderWindow_pollEvent(window, &event)) {
