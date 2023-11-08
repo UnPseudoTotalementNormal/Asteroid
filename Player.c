@@ -13,6 +13,7 @@ typedef int bool;
 #define false 0
 
 void player_move_toward(struct Ship ship) {
+	
 	float direction_x = cos(ship.angle * 3.1415 / 180);
 	float direction_y = sin(ship.angle * 3.1415 / 180);
 	ship.position.x += ship.speed * direction_x;

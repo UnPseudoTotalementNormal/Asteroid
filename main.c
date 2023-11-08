@@ -48,12 +48,13 @@ void main() {
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X/2, WINDOW_Y/2},
         .angle = -90,
-        .speed = 10,
+        .speed = 2,
+        .angle_speed = 2,
         .font = sfFont_createFromFile("Font/Arial.ttf"),
         .text = sfText_create(),
     };
     sfText_setFont(Player.text, Player.font);
-    sfText_setString(Player.text, "o");
+    sfText_setString(Player.text, "A");
     sfText_setScale(Player.text, (sfVector2f) { 4 * ratio_x, 4 * ratio_y });
     sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height / 2 });
 
@@ -70,7 +71,12 @@ void main() {
         if (sfKeyboard_isKeyPressed(sfKeyUp)) {
             player_move_toward(&Player);
         }
+        if (sfKeyboard_isKeyPressed(sfKeyRight)) {
+            Player.angle += Player.angle_speed;
+        }
+
         sfText_setPosition(Player.text, Player.position);
+        sfText_setRotation(Player.text, Player.angle + 90);
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
 
