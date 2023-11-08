@@ -1,11 +1,11 @@
 #pragma once
 
 struct Ship {
-    float x;
-    float y;
+    sfVector2f position;
     float angle;
     float speed;
     sfFont *font;
+    sfText *text;
 };
 
-void player_move();
+void player_move_toward(Ship);

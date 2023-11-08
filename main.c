@@ -46,12 +46,16 @@ void main() {
     sfClock* animclock = sfClock_create();
 
     struct Ship Player = {
-        .x = 0,
-        .y = 0,
+        .position = (sfVector2f) {WINDOW_X/2, WINDOW_Y/2},
         .angle = -90,
         .speed = 10,
-        .font = sfFont_createFromFile("Font/RetroGaming.ttf"),
+        .font = sfFont_createFromFile("Font/Arial.ttf"),
+        .text = sfText_create(),
     };
+    sfText_setFont(Player.text, Player.font);
+    sfText_setString(Player.text, "o");
+    sfText_setScale(Player.text, (sfVector2f) { 4 * ratio_x, 4 * ratio_y });
+    sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height / 2 });
 
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
@@ -61,6 +65,12 @@ void main() {
         }
 
         Delta(deltaclock);
+        //sfText_rotate(Player.text, 1);
+
+        if (sfKeyboard_isKeyPressed(sfKeyUp)) {
+            player_move_toward(&Player);
+        }
+        sfText_setPosition(Player.text, Player.position);
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
 
@@ -72,6 +82,8 @@ void main() {
             sfClock_restart(animclock);
         }
         sfRenderWindow_clear(window, sfTransparent);
+
+        sfRenderWindow_drawText(window, Player.text, NULL);
 
         sfRenderWindow_display(window);
         /////////////////
