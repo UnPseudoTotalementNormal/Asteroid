@@ -39,10 +39,10 @@ void main() {
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
         .force = (sfVector2f) {0, 0},
-        .decceleration = 0.03,
+        .decceleration = 0.003,
         .angle = -90,
         .speed = 0.01,
-        .max_speed = 1.5,
+        .max_speed = 1.0,
         .angle_speed = 0.5,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),

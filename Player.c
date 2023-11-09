@@ -32,11 +32,11 @@ void ship_velocity(struct Ship ship) {
 		float normalized_x = ship.force.x / a_length;
 		float normalized_y = ship.force.y / a_length;
 		if (fabs(ship.force.x) - fabs(ship.decceleration * normalized_x) > 0) {
-			ship.force.x -= ship.decceleration * normalized_x;
+			ship.force.x -= (ship.decceleration * delta) * normalized_x;
 		}
 		else { ship.force.x = 0; }
 		if (fabs(ship.force.y) - fabs(ship.decceleration * normalized_y) > 0) {
-			ship.force.y -= ship.decceleration * normalized_y;
+			ship.force.y -= (ship.decceleration * delta) * normalized_y;
 		}
 		else { ship.force.y = 0; }
 	}
