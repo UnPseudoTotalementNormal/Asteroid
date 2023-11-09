@@ -47,9 +47,8 @@ void main() {
 
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
-        .velocity = (sfVector2f) {0, 0},
-        .acceleration = (sfVector2f) {0, 0},
-        .decceleration = 0.01,
+        .force = (sfVector2f) {0, 0},
+        .decceleration = 0.03,
         .angle = -90,
         .speed = 0.1,
         .angle_speed = 2,

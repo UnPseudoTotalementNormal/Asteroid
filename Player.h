@@ -2,11 +2,11 @@
 
 struct Ship {
     sfVector2f position;
-    sfVector2f velocity;
-    sfVector2f acceleration;
+    sfVector2f force;
     float decceleration;
     float angle;
     float speed;
+    float max_speed;
     float angle_speed;
     sfFont *font;
     sfText *text;

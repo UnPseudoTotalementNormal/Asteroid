@@ -15,23 +15,22 @@ typedef int bool;
 void ship_move_toward(struct Ship ship) {
 	float direction_x = cosf(ship.angle * 3.1415 / 180);
 	float direction_y = sinf(ship.angle * 3.1415 / 180);
-	ship.acceleration.x += ship.speed * direction_x;
-	ship.acceleration.y += ship.speed * direction_y;
+	ship.force.x += ship.speed * direction_x;
+	ship.force.y += ship.speed * direction_y;
 }
 
 void ship_velocity(struct Ship ship) {
-	ship.position.x += ship.acceleration.x;
-	ship.position.y += ship.acceleration.y;
-	if (ship.acceleration.x > 0) {
-		ship.acceleration.x -= ship.decceleration;
+	ship.position.x += ship.force.x;
+	ship.position.y += ship.force.y;
+
+	float a_length = sqrt(ship.force.x * ship.force.x + ship.force.y * ship.force.y);
+	if (a_length != 0) {
+		float normalized_x = ship.force.x / a_length;
+		float normalized_y = ship.force.y / a_length;
+
+		ship.force.x -= ship.decceleration * normalized_x;
+		ship.force.y -= ship.decceleration * normalized_y;
 	}
-	else if (ship.acceleration.x < 0) {
-		ship.acceleration.x += ship.decceleration;
-	}
-	if (ship.acceleration.y > 0) {
-		ship.acceleration.y -= ship.decceleration;
-	}
-	else if (ship.acceleration.y < 0) {
-		ship.acceleration.y += ship.decceleration;
-	}
+	
+	
 }
