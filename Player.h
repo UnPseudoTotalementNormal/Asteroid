@@ -15,3 +15,5 @@ struct Ship {
 void ship_move_toward(ship, delta);
 
 void ship_velocity(ship);
+
+void ship_oob(ship, limit_x, limit_y);

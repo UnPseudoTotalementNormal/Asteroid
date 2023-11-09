@@ -46,3 +46,19 @@ void ship_velocity(struct Ship ship) {
 		ship.force.y = 0;
 	}
 }
+
+void ship_oob(struct Ship ship, int limit_x, int limit_y) {
+	int offset = 40;
+	if (ship.position.x + ship.force.x > limit_x + offset) {
+		ship.position.x = 0 - offset;
+	}
+	if (ship.position.y + ship.force.y > limit_y + offset) {
+		ship.position.y = 0 - offset;
+	}
+	if (ship.position.x + ship.force.x < 0 - offset) {
+		ship.position.x = limit_x + offset;
+	}
+	if (ship.position.y + ship.force.y < 0 - offset) {
+		ship.position.y = limit_y + offset;
+	}
+}

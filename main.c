@@ -42,7 +42,7 @@ void main() {
         .decceleration = 0.03,
         .angle = -90,
         .speed = 0.01,
-        .max_speed = 0.5,
+        .max_speed = 1.5,
         .angle_speed = 0.5,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
@@ -71,6 +71,7 @@ void main() {
             Player.angle -= Player.angle_speed * delta;
         }
         ship_velocity(&Player);
+        ship_oob(&Player, WINDOW_X, WINDOW_Y);
 
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);
