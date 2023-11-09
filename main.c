@@ -46,18 +46,20 @@ void main() {
     sfClock* animclock = sfClock_create();
 
     struct Ship Player = {
-        .position = (sfVector2f) {WINDOW_X/2, WINDOW_Y/2},
+        .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
+        .velocity = (sfVector2f) {0, 0},
+        .acceleration = (sfVector2f) {0, 0},
+        .decceleration = 0.01,
         .angle = -90,
-        .speed = 2,
+        .speed = 0.1,
         .angle_speed = 2,
-        .font = sfFont_createFromFile("Font/Arial.ttf"),
+        .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
     sfText_setScale(Player.text, (sfVector2f) { 4 * ratio_x, 4 * ratio_y });
     sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height / 2 });
-
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
         while (sfRenderWindow_pollEvent(window, &event)) {
@@ -69,11 +71,15 @@ void main() {
         //sfText_rotate(Player.text, 1);
 
         if (sfKeyboard_isKeyPressed(sfKeyUp)) {
-            player_move_toward(&Player);
+            ship_move_toward(&Player);
         }
         if (sfKeyboard_isKeyPressed(sfKeyRight)) {
             Player.angle += Player.angle_speed;
         }
+        if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
+            Player.angle -= Player.angle_speed;
+        }
+        ship_velocity(&Player);
 
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);
