@@ -2,4 +2,6 @@
 
 int delta;
 
-void deltatime();
+void InitDelta();
+
+void DeltaTime();

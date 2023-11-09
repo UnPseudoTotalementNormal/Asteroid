@@ -7,6 +7,7 @@
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
 #include "Player.h"
+#include "Deltatime.h"
 
 typedef int bool;
 #define true 1
@@ -20,15 +21,10 @@ struct Asteroid {
 int nframe = 0;
 int anim_time = 75; 
 
-int Delta(sfClock* deltaclock) {
-    sfTime dtime = sfClock_getElapsedTime(deltaclock);
-    int delta = sfTime_asMilliseconds(dtime);
-    sfClock_restart(deltaclock);
-    return delta ;
-}
-
 void main() {
     srand(time(0));
+    InitDelta();
+
     sfFont* font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
 
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
@@ -40,8 +36,6 @@ void main() {
 
     sfRenderWindow* window = sfRenderWindow_create(mode, "SPOYO", sfFullscreen, NULL);
     sfRenderWindow_setFramerateLimit(window, 165);
-
-    int delta = 0;
 
     sfClock* deltaclock = sfClock_create();
     sfClock* animclock = sfClock_create();
@@ -66,8 +60,8 @@ void main() {
             if (event.type == sfEvtClosed)
                 sfRenderWindow_close(window);
         }
+        DeltaTime();
 
-        delta = Delta(deltaclock);
         //sfText_rotate(Player.text, 1);
 
         if (sfKeyboard_isKeyPressed(sfKeyUp)) {
