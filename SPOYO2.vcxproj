@@ -131,11 +131,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroid.c" />
     <ClCompile Include="Deltatime.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Player.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="Deltatime.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

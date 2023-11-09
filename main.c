@@ -7,16 +7,12 @@
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
 #include "Player.h"
+#include "Asteroid.h"
 #include "Deltatime.h"
 
 typedef int bool;
 #define true 1
 #define false 0
-
-struct Asteroid {
-    float x;
-    float y;
-};
 
 int nframe = 0;
 int anim_time = 75; 
