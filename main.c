@@ -46,6 +46,7 @@ void main() {
         .decceleration = 0.03,
         .angle = -90,
         .speed = 0.01,
+        .max_speed = 0.5,
         .angle_speed = 0.5,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
