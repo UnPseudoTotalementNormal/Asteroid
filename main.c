@@ -46,14 +46,14 @@ void main() {
         .decceleration = 0.03,
         .angle = -90,
         .speed = 0.01,
-        .angle_speed = 2,
+        .angle_speed = 0.5,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
     sfText_setCharacterSize(Player.text, ratio_x * 125);
-    sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height / 2 });
+    sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height });
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
         while (sfRenderWindow_pollEvent(window, &event)) {
@@ -68,12 +68,12 @@ void main() {
             ship_move_toward(&Player, delta);
         }
         if (sfKeyboard_isKeyPressed(sfKeyRight)) {
-            Player.angle += Player.angle_speed;
+            Player.angle += Player.angle_speed * delta;
         }
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
-            Player.angle -= Player.angle_speed;
+            Player.angle -= Player.angle_speed * delta;
         }
-        ship_velocity(&Player, delta);
+        ship_velocity(&Player);
 
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);

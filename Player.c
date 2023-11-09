@@ -12,7 +12,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-void ship_move_toward(struct Ship ship, int delta) {
+void ship_move_toward(struct Ship ship) {
 	float direction_x = cosf(ship.angle * 3.1415 / 180);
 	float direction_y = sinf(ship.angle * 3.1415 / 180);
 	ship.force.x += ship.speed * direction_x * delta;
