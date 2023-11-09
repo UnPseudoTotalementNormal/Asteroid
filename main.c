@@ -12,8 +12,6 @@ typedef int bool;
 #define true 1
 #define false 0
 
-float delta = 0;
-
 struct Asteroid {
     float x;
     float y;
@@ -22,10 +20,11 @@ struct Asteroid {
 int nframe = 0;
 int anim_time = 75; 
 
-void Delta(sfClock* deltaclock) {
+int Delta(sfClock* deltaclock) {
     sfTime dtime = sfClock_getElapsedTime(deltaclock);
-    delta = sfTime_asMilliseconds(dtime);
+    int delta = sfTime_asMilliseconds(dtime);
     sfClock_restart(deltaclock);
+    return delta ;
 }
 
 void main() {
@@ -42,6 +41,8 @@ void main() {
     sfRenderWindow* window = sfRenderWindow_create(mode, "SPOYO", sfFullscreen, NULL);
     sfRenderWindow_setFramerateLimit(window, 165);
 
+    int delta = 0;
+
     sfClock* deltaclock = sfClock_create();
     sfClock* animclock = sfClock_create();
 
@@ -50,14 +51,14 @@ void main() {
         .force = (sfVector2f) {0, 0},
         .decceleration = 0.03,
         .angle = -90,
-        .speed = 0.1,
+        .speed = 0.01,
         .angle_speed = 2,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
-    sfText_setScale(Player.text, (sfVector2f) { 4 * ratio_x, 4 * ratio_y });
+    sfText_setCharacterSize(Player.text, ratio_x * 125);
     sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height / 2 });
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
@@ -66,11 +67,11 @@ void main() {
                 sfRenderWindow_close(window);
         }
 
-        Delta(deltaclock);
+        delta = Delta(deltaclock);
         //sfText_rotate(Player.text, 1);
 
         if (sfKeyboard_isKeyPressed(sfKeyUp)) {
-            ship_move_toward(&Player);
+            ship_move_toward(&Player, delta);
         }
         if (sfKeyboard_isKeyPressed(sfKeyRight)) {
             Player.angle += Player.angle_speed;
@@ -78,7 +79,7 @@ void main() {
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
             Player.angle -= Player.angle_speed;
         }
-        ship_velocity(&Player);
+        ship_velocity(&Player, delta);
 
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);

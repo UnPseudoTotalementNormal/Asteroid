@@ -12,6 +12,6 @@ struct Ship {
     sfText *text;
 };
 
-void ship_move_toward(ship);
+void ship_move_toward(ship, delta);
 
 void ship_velocity(ship);

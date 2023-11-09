@@ -131,10 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Deltatime.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Player.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Deltatime.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
