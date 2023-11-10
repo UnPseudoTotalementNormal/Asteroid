@@ -23,11 +23,11 @@ void ship_move_toward(struct Ship ship) {
 	}
 }
 
-void ship_add_single_force(struct Ship ship, int angle, int force) {
+void ship_add_single_force(struct Ship *ship, int angle, int force) {
 	float direction_x = cosf((angle + 180) * 3.1415 / 180);
 	float direction_y = sinf((angle + 180) * 3.1415 / 180);
-	ship.force.x += force * direction_x;
-	ship.force.y += force * direction_y;
+	ship -> force.x += force * direction_x;
+	ship -> force.y += force * direction_y;
  }
 
 void ship_velocity(struct Ship ship) {
@@ -52,6 +52,32 @@ void ship_velocity(struct Ship ship) {
 		ship.force.x = 0;
 		ship.force.y = 0;
 	}
+}
+
+void ship_shotgun(struct Ship ship) {
+	ship.heat += 0.25;
+	sfClock_restart(ship.heat_clock);
+	ship_add_single_force(&ship, (int)ship.angle, (int)ship.recoil_force);
+}
+
+void ship_heat_system(struct Ship ship) {
+	sfTime heat_time = sfClock_getElapsedTime(ship.heat_clock);
+	int heat_milliseconds = sfTime_asMilliseconds(heat_time);
+	if ((heat_milliseconds >= ship.unheat_time && !ship.overheat) || (heat_milliseconds >= ship.overheat_time && ship.overheat)) {
+		if (ship.heat > 0) {
+			ship.heat -= ship.unheat_speed * delta;
+		}
+		else {
+			ship.heat = 0;
+			ship.overheat = false;
+		}
+	}
+
+	if (ship.heat >= 1) {
+		ship.heat = 1;
+		ship.overheat = true;
+	}
+
 }
 
 void ship_oob(struct Ship ship, int limit_x, int limit_y) {

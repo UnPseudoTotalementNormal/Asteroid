@@ -28,7 +28,7 @@ void main() {
 
     sfVideoMode mode = { WINDOW_X, WINDOW_Y, 32 };
 
-    sfRenderWindow* window = sfRenderWindow_create(mode, "SPOYO", sfFullscreen, NULL);
+    sfRenderWindow* window = sfRenderWindow_create(mode, "Shotgunnin' space: It's Shotgunnin' time", sfFullscreen, NULL);
     sfRenderWindow_setFramerateLimit(window, 165);
 
     sfClock* deltaclock = sfClock_create();
@@ -37,12 +37,18 @@ void main() {
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
         .force = (sfVector2f) {0, 0},
-        .decceleration = 0.008,
+        .decceleration = 0.005 * ratio_x,
         .angle = -90,
-        .speed = 0.02,
-        .max_speed = 3.0,
+        .speed = 0.008 * ratio_x,
+        .max_speed = 4.0 * ratio_x,
         .angle_speed = 0.5,
-        .recoil_force = 8.0,
+        .recoil_force = 8.0 * ratio_x,
+        .heat = 0,
+        .unheat_speed = 0.0003,
+        .overheat = false,
+        .unheat_time = 1000,
+        .overheat_time = 2500,
+        .heat_clock = sfClock_create(),
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
@@ -69,16 +75,33 @@ void main() {
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
             Player.angle -= Player.angle_speed * delta;
         }
-        if (sfKeyboard_isKeyPressed(sfKeySpace)) {
+        if (sfKeyboard_isKeyPressed(sfKeySpace) && Player.heat < 100 && Player.overheat == false) {
             if (IsButtonPressed(sfKeySpace) == false) {
-                ship_add_single_force(&Player, (int)Player.angle, (int) Player.recoil_force);
+                ship_shotgun(&Player);
             }
         }
+
         ship_velocity(&Player);
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
+        ship_heat_system(&Player);
 
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);
+        if (Player.overheat == false) {
+            sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, (sfUint8)255 * (1 - Player.heat), (sfUint8)255 * (1 - Player.heat)));
+        }
+        else {
+            sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, 
+                (sfUint8)(255.0) * 0.75 * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock))/ 200.0)), 
+                (sfUint8)(255.0) * 0.75 * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock))/ 200.0 ))));
+        }
+        
+
+        sfText* heat_text = sfText_create();
+        sfText_setFont(heat_text, font1);
+        char heat_char[10];
+        snprintf(heat_char, 10, "Heat: %f", Player.heat);
+        sfText_setString(heat_text ,heat_char);
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
         ButtonCheck();
@@ -87,6 +110,7 @@ void main() {
         sfRenderWindow_clear(window, sfTransparent);
 
         sfRenderWindow_drawText(window, Player.text, NULL);
+        sfRenderWindow_drawText(window, heat_text, NULL);
 
         sfRenderWindow_display(window);
         /////////////////
