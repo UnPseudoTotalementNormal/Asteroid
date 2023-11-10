@@ -62,13 +62,16 @@ void main() {
         //sfText_rotate(Player.text, 1);
 
         if (sfKeyboard_isKeyPressed(sfKeyUp)) {
-            ship_move_toward(&Player, delta);
+            ship_move_toward(&Player);
         }
         if (sfKeyboard_isKeyPressed(sfKeyRight)) {
             Player.angle += Player.angle_speed * delta;
         }
         if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
             Player.angle -= Player.angle_speed * delta;
+        }
+        if (sfKeyboard_isKeyPressed(sfKeySpace)) {
+            ship_add_single_force(&Player, (int) Player.angle, 3);
         }
         ship_velocity(&Player);
         ship_oob(&Player, WINDOW_X, WINDOW_Y);

@@ -23,6 +23,13 @@ void ship_move_toward(struct Ship ship) {
 	}
 }
 
+void ship_add_single_force(struct Ship ship, int angle, int force) {
+	float direction_x = cosf((angle + 180) * 3.1415 / 180);
+	float direction_y = sinf((angle + 180) * 3.1415 / 180);
+	ship.force.x += force * direction_x;
+	ship.force.y += force * direction_y;
+ }
+
 void ship_velocity(struct Ship ship) {
 	ship.position.x += ship.force.x;
 	ship.position.y += ship.force.y;
