@@ -7,6 +7,7 @@
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
 #include "Player.h"
+#include "Bullet.h"
 #include "Asteroid.h"
 #include "Deltatime.h"
 #include "ButtonPress.h"
@@ -34,6 +35,10 @@ void main() {
     sfClock* deltaclock = sfClock_create();
     sfClock* animclock = sfClock_create();
 
+    for (int i = 0; i < 10; i++) {
+        create_asteroid(WINDOW_X, WINDOW_Y);
+    }
+    
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
         .force = (sfVector2f) {0, 0},
@@ -52,6 +57,7 @@ void main() {
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
+
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
     sfText_setCharacterSize(Player.text, ratio_x * 125);
@@ -99,8 +105,8 @@ void main() {
 
         sfText* heat_text = sfText_create();
         sfText_setFont(heat_text, font1);
-        char heat_char[10];
-        snprintf(heat_char, 10, "Heat: %f", Player.heat);
+        char heat_char[12];
+        snprintf(heat_char, 12, "Heat: %f", Player.heat);
         sfText_setString(heat_text ,heat_char);
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
@@ -111,6 +117,8 @@ void main() {
 
         sfRenderWindow_drawText(window, Player.text, NULL);
         sfRenderWindow_drawText(window, heat_text, NULL);
+        
+        draw_all_asteroids(window);
 
         sfRenderWindow_display(window);
         /////////////////

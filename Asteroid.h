@@ -10,3 +10,7 @@ struct Asteroid {
     sfFont* font;
     sfText* text;
 };
+
+void create_asteroid(WINDOW_X, WINDOW_Y);
+
+void draw_all_asteroids(window);
