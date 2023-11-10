@@ -13,4 +13,8 @@ struct Asteroid {
 
 void create_asteroid(WINDOW_X, WINDOW_Y);
 
-void draw_all_asteroids(window);
+void set_asteroid_random_force(i);
+
+void move_asteroids();
+
+void draw_asteroids(window);

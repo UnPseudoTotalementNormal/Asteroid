@@ -37,6 +37,7 @@ void main() {
 
     for (int i = 0; i < 10; i++) {
         create_asteroid(WINDOW_X, WINDOW_Y);
+        set_asteroid_random_force(i);
     }
     
     struct Ship Player = {
@@ -112,13 +113,15 @@ void main() {
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
         ButtonCheck();
 
+        move_asteroids();
+
         ////// DRAW /////
         sfRenderWindow_clear(window, sfTransparent);
 
         sfRenderWindow_drawText(window, Player.text, NULL);
         sfRenderWindow_drawText(window, heat_text, NULL);
         
-        draw_all_asteroids(window);
+        draw_asteroids(window);
 
         sfRenderWindow_display(window);
         /////////////////
