@@ -92,8 +92,8 @@ void main() {
         }
         else {
             sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, 
-                (sfUint8)(255.0) * 0.75 * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock))/ 200.0)), 
-                (sfUint8)(255.0) * 0.75 * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock))/ 200.0 ))));
+                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0)),
+                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0 ))));
         }
         
 

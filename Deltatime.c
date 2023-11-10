@@ -5,7 +5,6 @@
 #include <SFML/Audio.h>
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
-#include "Player.h"
 #include "Deltatime.h"
 
 sfClock* deltaclock;
