@@ -30,6 +30,9 @@
     <ClCompile Include="Bullet.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="ButtonPress.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -42,6 +45,9 @@
       <Filter>Fichiers sources</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonPress.h">
       <Filter>Fichiers sources</Filter>
     </ClInclude>
   </ItemGroup>

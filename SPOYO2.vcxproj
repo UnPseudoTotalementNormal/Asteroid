@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Asteroid.c" />
     <ClCompile Include="Bullet.c" />
+    <ClCompile Include="ButtonPress.c" />
     <ClCompile Include="Deltatime.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Player.c" />
@@ -140,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="ButtonPress.h" />
     <ClInclude Include="Deltatime.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>

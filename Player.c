@@ -15,10 +15,10 @@ typedef int bool;
 void ship_move_toward(struct Ship ship) {
 	float direction_x = cosf(ship.angle * 3.1415 / 180);
 	float direction_y = sinf(ship.angle * 3.1415 / 180);
-	if (fabs(ship.force.x + ship.speed * direction_x * delta) < fabs(ship.max_speed * direction_x * delta)) {
+	if (fabs(ship.force.x + ship.speed * direction_x * delta) < fabs(ship.max_speed * direction_x)) {
 		ship.force.x += ship.speed * direction_x * delta;
 	}
-	if (fabs(ship.force.y + ship.speed * direction_y * delta) < fabs(ship.max_speed * direction_y * delta)) {
+	if (fabs(ship.force.y + ship.speed * direction_y * delta) < fabs(ship.max_speed * direction_y)) {
 		ship.force.y += ship.speed * direction_y * delta;
 	}
 }

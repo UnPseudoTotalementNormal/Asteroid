@@ -9,13 +9,11 @@
 #include "Player.h"
 #include "Asteroid.h"
 #include "Deltatime.h"
+#include "ButtonPress.h"
 
 typedef int bool;
 #define true 1
 #define false 0
-
-int nframe = 0;
-int anim_time = 75; 
 
 void main() {
     srand(time(0));
@@ -39,11 +37,12 @@ void main() {
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
         .force = (sfVector2f) {0, 0},
-        .decceleration = 0.003,
+        .decceleration = 0.008,
         .angle = -90,
-        .speed = 0.01,
-        .max_speed = 1.0,
+        .speed = 0.02,
+        .max_speed = 3.0,
         .angle_speed = 0.5,
+        .recoil_force = 8.0,
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
     };
@@ -71,7 +70,9 @@ void main() {
             Player.angle -= Player.angle_speed * delta;
         }
         if (sfKeyboard_isKeyPressed(sfKeySpace)) {
-            ship_add_single_force(&Player, (int) Player.angle, 3);
+            if (IsButtonPressed(sfKeySpace) == false) {
+                ship_add_single_force(&Player, (int)Player.angle, (int) Player.recoil_force);
+            }
         }
         ship_velocity(&Player);
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
@@ -80,14 +81,9 @@ void main() {
         sfText_setRotation(Player.text, Player.angle + 90);
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
+        ButtonCheck();
 
         ////// DRAW /////
-        sfTime atime = sfClock_getElapsedTime(animclock); //for animated frames
-        int amseconds = sfTime_asMilliseconds(atime);
-        if (amseconds >= anim_time) {
-            nframe += 1;
-            sfClock_restart(animclock);
-        }
         sfRenderWindow_clear(window, sfTransparent);
 
         sfRenderWindow_drawText(window, Player.text, NULL);

@@ -8,6 +8,7 @@ struct Ship {
     float speed;
     float max_speed;
     float angle_speed;
+    float recoil_force;
     sfFont *font;
     sfText *text;
 };
