@@ -18,6 +18,7 @@ int max_asteroid = 1000;
 void create_asteroid(int WINDOW_X, int WINDOW_Y) {
 	for (int i = 0; i < max_asteroid; i++) {
 		if (asteroid_list[i].text == NULL || asteroid_list[i].dead == true) {
+			asteroid_list[i].dead = false;
 			asteroid_list[i].position.x = (rand() % WINDOW_X);
 			asteroid_list[i].position.y = (rand() % WINDOW_Y);
 			asteroid_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");

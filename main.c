@@ -130,6 +130,7 @@ void main() {
         sfRenderWindow_drawText(window, heat_text, NULL);
         
         draw_asteroids(window);
+        draw_bullets(window);
 
         sfRenderWindow_display(window);
         /////////////////
