@@ -24,8 +24,8 @@ void main() {
 
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     int WINDOW_Y = sfVideoMode_getDesktopMode().height;
-    int ratio_x = WINDOW_X * 1 / 2560;
-    int ratio_y = WINDOW_Y * 1 / 1440;
+    float ratio_x = (float)WINDOW_X / 2560.0;
+    float ratio_y = (float)WINDOW_Y / 1440.0;
 
     sfVideoMode mode = { WINDOW_X, WINDOW_Y, 32 };
 
@@ -35,7 +35,7 @@ void main() {
     sfClock* deltaclock = sfClock_create();
     sfClock* animclock = sfClock_create();
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 15; i++) {
         create_asteroid(WINDOW_X, WINDOW_Y);
         set_asteroid_random_force(i);
     }
@@ -61,7 +61,7 @@ void main() {
 
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
-    sfText_setCharacterSize(Player.text, ratio_x * 125);
+    sfText_setCharacterSize(Player.text, ratio_x * 125.0);
     sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height });
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
@@ -92,6 +92,12 @@ void main() {
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
         ship_heat_system(&Player);
 
+        if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text)) == true) {
+            Player.position.y = WINDOW_Y/2;
+            Player.position.x = WINDOW_X/2;
+        }
+        asteroid_to_asteroid_collision();
+
         sfText_setPosition(Player.text, Player.position);
         sfText_setRotation(Player.text, Player.angle + 90);
         if (Player.overheat == false) {
@@ -100,7 +106,7 @@ void main() {
         else {
             sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, 
                 (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0)),
-                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0 ))));
+                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0))));
         }
         
 
@@ -114,6 +120,7 @@ void main() {
         ButtonCheck();
 
         move_asteroids();
+        asteroid_oob(WINDOW_X, WINDOW_Y);
 
         ////// DRAW /////
         sfRenderWindow_clear(window, sfTransparent);

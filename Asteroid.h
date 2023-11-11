@@ -18,3 +18,9 @@ void set_asteroid_random_force(i);
 void move_asteroids();
 
 void draw_asteroids(window);
+
+void asteroid_oob(limit_x, limit_y);
+
+int asteroid_collision(collider_position, collider_size);
+
+void asteroid_to_asteroid_collision();
