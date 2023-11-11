@@ -6,6 +6,7 @@
 #include <SFML/Audio.h>
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
+#include "Vector2_tools.h"
 #include "Player.h"
 #include "Bullet.h"
 #include "Asteroid.h"
@@ -95,6 +96,7 @@ void main() {
         if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text)) == true) {
             Player.position.y = WINDOW_Y/2;
             Player.position.x = WINDOW_X/2;
+            Player.force = (sfVector2f){ 0, 0 };
         }
         asteroid_to_asteroid_collision();
 

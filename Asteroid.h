@@ -7,6 +7,7 @@ struct Asteroid {
     float angle;
     float speed;
     float angle_speed;
+    int dead;
     sfFont* font;
     sfText* text;
 };

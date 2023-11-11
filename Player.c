@@ -5,6 +5,7 @@
 #include <SFML/Audio.h>
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
+#include "Vector2_tools.h"
 #include "Player.h"
 #include "Deltatime.h"
 
@@ -34,10 +35,10 @@ void ship_velocity(struct Ship ship) {
 	ship.position.x += ship.force.x;
 	ship.position.y += ship.force.y;
 
-	float a_length = sqrt(ship.force.x * ship.force.x + ship.force.y * ship.force.y);
+	float a_length = Vector2_length(ship.force);
 	if (a_length != 0) {
-		float normalized_x = ship.force.x / a_length;
-		float normalized_y = ship.force.y / a_length;
+		float normalized_x = Vector2_normalized(ship.force).x;
+		float normalized_y = Vector2_normalized(ship.force).y;
 		if (fabs(ship.force.x) - fabs(ship.decceleration * normalized_x) > 0) {
 			ship.force.x -= (ship.decceleration * delta) * normalized_x;
 		}

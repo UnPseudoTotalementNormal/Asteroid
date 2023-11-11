@@ -137,6 +137,7 @@
     <ClCompile Include="Deltatime.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Player.c" />
+    <ClCompile Include="Vector2_tools.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Asteroid.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="ButtonPress.h" />
     <ClInclude Include="Deltatime.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Vector2_tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
