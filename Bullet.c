@@ -6,6 +6,7 @@
 #include <SFML/System.h>
 #include "Vector2_tools.h"
 #include "Deltatime.h"
+#include "Asteroid.h"
 #include "Bullet.h"
 
 typedef int bool;
@@ -40,9 +41,14 @@ void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, i
 
 void move_bullets() {
 	for (int i = 0; i < max_bullet; i++) {
-		bullet_list[i].position.x += bullet_list[i].force.x * delta;
-		bullet_list[i].position.y += bullet_list[i].force.y * delta;
-		bullet_list[i].angle += bullet_list[i].angle_speed * delta;
+		if (bullet_list[i].text != NULL && bullet_list[i].dead == false) {
+			bullet_list[i].position.x += bullet_list[i].force.x * delta;
+			bullet_list[i].position.y += bullet_list[i].force.y * delta;
+			bullet_list[i].angle += bullet_list[i].angle_speed * delta;
+			if (asteroid_collision(bullet_list[i].position, sfText_getCharacterSize(bullet_list[i].text), true)) {
+				bullet_list[i].dead = true;
+			}
+		}
 	}
 }
 
@@ -69,4 +75,8 @@ void draw_bullets(sfRenderWindow *window) {
 			sfRenderWindow_drawText(window, bullet_list[i].text, NULL);
 		}
 	}
+}
+
+void bullet_oob(limit_x, limit_y) {
+
 }

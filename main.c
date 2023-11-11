@@ -92,7 +92,7 @@ void main() {
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
         ship_heat_system(&Player);
 
-        if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text)) == true) {
+        if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text), false) == true) {
             Player.position.y = WINDOW_Y/2;
             Player.position.x = WINDOW_X/2;
             Player.force = (sfVector2f){ 0, 0 };

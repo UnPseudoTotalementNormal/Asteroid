@@ -87,7 +87,7 @@ int asteroid_collision(sfVector2f collider_position, int collider_size, int leth
 			float asteroid_size = sfText_getLocalBounds(asteroid_list[i].text).width;
 			if (distance < (collider_size + asteroid_size) /3) {
 				if (lethal == true) {
-					asteroid_list[i].dead = false;
+					asteroid_list[i].dead = true;
 				}
 				return 1;
 			}

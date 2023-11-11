@@ -21,3 +21,5 @@ void move_bullets();
 void check_bullets_lifetime();
 
 void draw_bullets(window);
+
+void bullet_oob(limit_x, limit_y);
