@@ -52,7 +52,7 @@ void move_asteroids() {
 
 void draw_asteroids(sfRenderWindow *window) {
 	for (int i = 0; i < max_asteroid; i++) {
-		if (asteroid_list[i].text != NULL) {
+		if (asteroid_list[i].text != NULL && asteroid_list[i].dead == false) {
 			sfText_setRotation(asteroid_list[i].text, asteroid_list[i].angle);
 			sfText_setPosition(asteroid_list[i].text, asteroid_list[i].position);
 			sfRenderWindow_drawText(window, asteroid_list[i].text, NULL);
@@ -78,14 +78,17 @@ void asteroid_oob(int limit_x, int limit_y) {
 	}
 }
 
-int asteroid_collision(sfVector2f collider_position, int collider_size) {
+int asteroid_collision(sfVector2f collider_position, int collider_size, int lethal) {
 	for (int i = 0; i < max_asteroid; i++) {
-		if (asteroid_list[i].text != NULL) {
+		if (asteroid_list[i].text != NULL && asteroid_list[i].dead == false) {
 			float distance_x = asteroid_list[i].position.x - collider_position.x;
 			float distance_y = asteroid_list[i].position.y - collider_position.y;
 			float distance = Vector2_length((sfVector2f) { distance_x, distance_y });
 			float asteroid_size = sfText_getLocalBounds(asteroid_list[i].text).width;
 			if (distance < (collider_size + asteroid_size) /3) {
+				if (lethal == true) {
+					asteroid_list[i].dead = false;
+				}
 				return 1;
 			}
 		}
@@ -95,9 +98,9 @@ int asteroid_collision(sfVector2f collider_position, int collider_size) {
 
 void asteroid_to_asteroid_collision() {
 	for (int i = 0; i < max_asteroid; i++) {
-		if (asteroid_list[i].text != NULL) {
+		if (asteroid_list[i].text != NULL && asteroid_list[i].dead == false) {
 			for (int j = 0; j < max_asteroid; j++) {
-				if (asteroid_list[j].text != NULL && i != j) {
+				if (asteroid_list[j].text != NULL && asteroid_list[j].dead == false && i != j) {
 					float distance1_x = (asteroid_list[i].position.x + (asteroid_list[i].force.x * delta)) - (asteroid_list[j].position.x + (asteroid_list[j].force.x * delta));
 					float distance1_y = (asteroid_list[i].position.y + (asteroid_list[i].force.y * delta)) - (asteroid_list[j].position.y + (asteroid_list[j].force.y * delta));
 					float distance = Vector2_length((sfVector2f) { distance1_x, distance1_y });

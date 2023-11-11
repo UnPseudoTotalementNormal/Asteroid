@@ -117,8 +117,10 @@ void main() {
         snprintf(heat_char, 12, "Heat: %f", Player.heat);
         sfText_setString(heat_text ,heat_char);
 
-        if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
         ButtonCheck();
+
+        move_bullets();
+        check_bullets_lifetime();
 
         move_asteroids();
         asteroid_oob(WINDOW_X, WINDOW_Y);
@@ -134,6 +136,8 @@ void main() {
 
         sfRenderWindow_display(window);
         /////////////////
+
+        if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
     }
 
     sfClock_destroy(deltaclock);
