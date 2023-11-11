@@ -16,7 +16,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-void player_controller(struct Ship* Player1) {
+void player_controller(struct Ship* Player1, struct Ship* Player2) {
     if (sfKeyboard_isKeyPressed(sfKeyUp)) {
         ship_move_toward(Player1);
     }
@@ -29,6 +29,23 @@ void player_controller(struct Ship* Player1) {
     if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1 -> heat < 100 && Player1 -> overheat == false) {
         if (IsButtonPressed(sfKeySpace) == false) {
             ship_shotgun(Player1);
+        }
+    }
+
+    if (Player2 != NULL) {
+        if (sfKeyboard_isKeyPressed(sfKeyZ)) {
+            ship_move_toward(Player2);
+        }
+        if (sfKeyboard_isKeyPressed(sfKeyD)) {
+            Player2->angle += Player2->angle_speed * delta;
+        }
+        if (sfKeyboard_isKeyPressed(sfKeyQ)) {
+            Player2->angle -= Player2->angle_speed * delta;
+        }
+        if (sfKeyboard_isKeyPressed(sfKeyLShift) && Player2->heat < 100 && Player2->overheat == false) {
+            if (IsButtonPressed(sfKeyLShift) == false) {
+                ship_shotgun(Player2);
+            }
         }
     }
 }
@@ -88,8 +105,7 @@ void main() {
         }
         DeltaTime();
 
-        player_controller(&Player);
-
+        player_controller(&Player, NULL);
         ship_movement(&Player);
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
         ship_heat_system(&Player);
