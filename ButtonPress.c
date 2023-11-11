@@ -8,8 +8,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
-int buttons[80];
-int buttonslen = 80;
+int buttons[100];
+int buttonslen = 100;
 
 int IsButtonPressed(int button) {
 	if (buttons[button] == true) { 

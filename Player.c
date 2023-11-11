@@ -31,7 +31,7 @@ void ship_add_single_force(struct Ship *ship, int angle, int force) {
 	ship -> force.y += force * direction_y;
  }
 
-void ship_velocity(struct Ship ship) {
+void ship_movement(struct Ship ship) {
 	ship.position.x += ship.force.x;
 	ship.position.y += ship.force.y;
 
@@ -53,6 +53,9 @@ void ship_velocity(struct Ship ship) {
 		ship.force.x = 0;
 		ship.force.y = 0;
 	}
+
+	sfText_setPosition(ship.text, ship.position);
+	sfText_setRotation(ship.text, ship.angle + 90);
 }
 
 void ship_shotgun(struct Ship ship) {
@@ -84,6 +87,14 @@ void ship_heat_system(struct Ship ship) {
 		ship.overheat = true;
 	}
 
+	if (ship.overheat == false) {
+		sfText_setFillColor(ship.text, sfColor_fromRGB((sfUint8)255, (sfUint8)255 * (1 - ship.heat), (sfUint8)255 * (1 - ship.heat)));
+	}
+	else {
+		sfText_setFillColor(ship.text, sfColor_fromRGB((sfUint8)255,
+			(sfUint8)(255.0) - 255.0 * ship.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(ship.heat_clock)) / 200.0)),
+			(sfUint8)(255.0) - 255.0 * ship.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(ship.heat_clock)) / 200.0))));
+	}
 }
 
 void ship_oob(struct Ship ship, int limit_x, int limit_y) {

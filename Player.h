@@ -23,7 +23,7 @@ void ship_move_toward(ship);
 
 void ship_add_single_force(ship, angle, force);
 
-void ship_velocity(ship);
+void ship_movement(ship);
 
 void ship_shotgun(ship);
 

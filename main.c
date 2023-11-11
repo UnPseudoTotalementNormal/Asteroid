@@ -16,6 +16,23 @@ typedef int bool;
 #define true 1
 #define false 0
 
+void player_controller(struct Ship* Player1) {
+    if (sfKeyboard_isKeyPressed(sfKeyUp)) {
+        ship_move_toward(Player1);
+    }
+    if (sfKeyboard_isKeyPressed(sfKeyRight)) {
+        Player1 -> angle += Player1 -> angle_speed * delta;
+    }
+    if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
+        Player1 -> angle -= Player1 -> angle_speed * delta;
+    }
+    if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1 -> heat < 100 && Player1 -> overheat == false) {
+        if (IsButtonPressed(sfKeySpace) == false) {
+            ship_shotgun(Player1);
+        }
+    }
+}
+
 void main() {
     srand(time(0));
     InitDelta();
@@ -71,61 +88,31 @@ void main() {
         }
         DeltaTime();
 
-        //sfText_rotate(Player.text, 1);
+        player_controller(&Player);
 
-        if (sfKeyboard_isKeyPressed(sfKeyUp)) {
-            ship_move_toward(&Player);
-        }
-        if (sfKeyboard_isKeyPressed(sfKeyRight)) {
-            Player.angle += Player.angle_speed * delta;
-        }
-        if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
-            Player.angle -= Player.angle_speed * delta;
-        }
-        if (sfKeyboard_isKeyPressed(sfKeySpace) && Player.heat < 100 && Player.overheat == false) {
-            if (IsButtonPressed(sfKeySpace) == false) {
-                ship_shotgun(&Player);
-            }
-        }
-
-        ship_velocity(&Player);
+        ship_movement(&Player);
         ship_oob(&Player, WINDOW_X, WINDOW_Y);
         ship_heat_system(&Player);
-
         if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text), false) == true) {
             Player.position.y = WINDOW_Y/2;
             Player.position.x = WINDOW_X/2;
             Player.force = (sfVector2f){ 0, 0 };
         }
-        asteroid_to_asteroid_collision();
-
-        sfText_setPosition(Player.text, Player.position);
-        sfText_setRotation(Player.text, Player.angle + 90);
-        if (Player.overheat == false) {
-            sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, (sfUint8)255 * (1 - Player.heat), (sfUint8)255 * (1 - Player.heat)));
-        }
-        else {
-            sfText_setFillColor(Player.text, sfColor_fromRGB((sfUint8)255, 
-                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0)),
-                (sfUint8)(255.0) - 255.0 * Player.heat * fabs(sinf(sfTime_asMilliseconds(sfClock_getElapsedTime(Player.heat_clock)) / 200.0))));
-        }
-        
-
-        sfText* heat_text = sfText_create();
-        sfText_setFont(heat_text, font1);
-        char heat_char[12];
-        snprintf(heat_char, 12, "Heat: %f", Player.heat);
-        sfText_setString(heat_text ,heat_char);
-
-        ButtonCheck();
 
         move_bullets();
         check_bullets_lifetime();
 
+        asteroid_to_asteroid_collision();
         move_asteroids();
         asteroid_oob(WINDOW_X, WINDOW_Y);
 
         ////// DRAW /////
+        sfText* heat_text = sfText_create();
+        sfText_setFont(heat_text, font1);
+        char heat_char[12];
+        snprintf(heat_char, 12, "Heat: %f", Player.heat);
+        sfText_setString(heat_text, heat_char);
+
         sfRenderWindow_clear(window, sfTransparent);
 
         sfRenderWindow_drawText(window, Player.text, NULL);
@@ -137,6 +124,7 @@ void main() {
         sfRenderWindow_display(window);
         /////////////////
 
+        ButtonCheck();
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
     }
 
