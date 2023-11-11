@@ -59,6 +59,9 @@ void ship_shotgun(struct Ship ship) {
 	ship.heat += 0.25;
 	sfClock_restart(ship.heat_clock);
 	ship_add_single_force(&ship, (int)ship.angle, (int)ship.recoil_force);
+	int WINDOW_X = sfVideoMode_getDesktopMode().width;
+	int WINDOW_Y = sfVideoMode_getDesktopMode().height;
+	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle + 90), 1);
 }
 
 void ship_heat_system(struct Ship ship) {

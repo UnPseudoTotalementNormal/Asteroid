@@ -12,6 +12,6 @@ struct Bullet {
     sfText* text;
 };
 
-void create_bullet(WINDOW_X, WINDOW_Y, position, angle);
+void create_bullet(WINDOW_X, WINDOW_Y, position, angle, force);
 
 void draw_bullets(window);

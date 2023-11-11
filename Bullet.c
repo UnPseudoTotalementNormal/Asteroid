@@ -15,12 +15,15 @@ typedef int bool;
 struct Bullet bullet_list[100];
 int max_bullet = 100;
 
-void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle) {
+void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force) {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text == NULL || bullet_list[i].dead == true) {
 			bullet_list[i].dead = false;
 			bullet_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");
 			bullet_list[i].text = sfText_create();
+			bullet_list[i].position = position;
+			bullet_list[i].angle = angle;
+			//bullet_list[i].force = 
 			sfText_setFont(bullet_list[i].text, bullet_list[i].font);
 			sfText_setString(bullet_list[i].text, "I");
 			sfText_setCharacterSize(bullet_list[i].text, (float)WINDOW_X * 100.0 / 2560.0);
@@ -30,7 +33,7 @@ void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle) {
 	}
 }
 
-void draw_bullets(window) {
+void draw_bullets(sfRenderWindow *window) {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text != NULL) {
 			sfText_setRotation(bullet_list[i].text, bullet_list[i].angle);
