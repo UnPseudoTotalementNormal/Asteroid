@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include <SFML/Window.h>
-#include <SFML/Audio.h>
 #include <SFML/Graphics.h>
 #include <SFML/System.h>
 #include "Vector2_tools.h"
 #include "Player.h"
+#include "Bullet.h"
 #include "Deltatime.h"
 
 typedef int bool;
