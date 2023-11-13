@@ -70,7 +70,7 @@ void main() {
     sfClock* animclock = sfClock_create();
 
     for (int i = 0; i < 15; i++) {
-        create_asteroid(0, 0, 3);
+        create_asteroid(0, 0, 2);
     }
     
     struct Ship Player = {
@@ -114,6 +114,7 @@ void main() {
             Player.force = (sfVector2f){ 0, 0 };
         }
 
+        bullet_oob(WINDOW_X, WINDOW_Y);
         move_bullets();
         check_bullets_lifetime();
 

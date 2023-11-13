@@ -78,5 +78,19 @@ void draw_bullets(sfRenderWindow *window) {
 }
 
 void bullet_oob(limit_x, limit_y) {
-
+	int offset = 40;
+	for (int i = 0; i < max_bullet; i++) {
+		if (bullet_list[i].position.x + bullet_list[i].force.x > limit_x + offset) {
+			bullet_list[i].position.x = 0 - offset;
+		}
+		if (bullet_list[i].position.y + bullet_list[i].force.y > limit_y + offset) {
+			bullet_list[i].position.y = 0 - offset;
+		}
+		if (bullet_list[i].position.x + bullet_list[i].force.x < 0 - offset) {
+			bullet_list[i].position.x = limit_x + offset;
+		}
+		if (bullet_list[i].position.y + bullet_list[i].force.y < 0 - offset) {
+			bullet_list[i].position.y = limit_y + offset;
+		}
+	}
 }

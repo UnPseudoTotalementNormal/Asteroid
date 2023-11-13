@@ -21,12 +21,14 @@ void create_asteroid(int x, int y, int size) {
 			int WINDOW_X = sfVideoMode_getDesktopMode().width;
 			int WINDOW_Y = sfVideoMode_getDesktopMode().height;
 			asteroid_list[i].dead = false;
+			asteroid_list[i].position.x = x;
+			asteroid_list[i].position.y = y;
 			if (x == 0) {
 				asteroid_list[i].position.x = (rand() % WINDOW_X);
 			}
 			if (y == 0) {
 				asteroid_list[i].position.y = (rand() % WINDOW_Y);
-			}
+			} 
 			asteroid_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");
 			asteroid_list[i].text = sfText_create();
 			sfText_setFont(asteroid_list[i].text, asteroid_list[i].font);
@@ -126,16 +128,16 @@ void asteroid_death(int i) {
 	switch (asteroid_list[i].size)
 	{
 	case 1:
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	case 2:
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	case 3:
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	default:
 		break;
