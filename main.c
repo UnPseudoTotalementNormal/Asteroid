@@ -81,7 +81,7 @@ void main() {
         .speed = 0.008 * ratio_x,
         .max_speed = 4.0 * ratio_x,
         .angle_speed = 0.5,
-        .recoil_force = 8.0 * ratio_x,
+        .recoil_force = 6.0 * ratio_x,
         .heat = 0,
         .unheat_speed = 0.0003,
         .overheat = false,

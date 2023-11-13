@@ -86,8 +86,17 @@ void draw_asteroids(sfRenderWindow *window) {
 }
 
 void asteroid_oob(int limit_x, int limit_y) {
-	int offset = 40;
+	int offset;
 	for (int i = 0; i < max_asteroid; i++) {
+		switch (asteroid_list[i].size)
+		{
+		case 3:
+			offset = 60;
+			break;
+		default:
+			offset = 40;
+			break;
+		}
 		if (asteroid_list[i].position.x + asteroid_list[i].force.x > limit_x + offset) {
 			asteroid_list[i].position.x = 0 - offset;
 		}
