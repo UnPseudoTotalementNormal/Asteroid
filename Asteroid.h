@@ -8,6 +8,7 @@ struct Asteroid {
     float speed;
     float angle_speed;
     int dead;
+    int size;
     sfFont* font;
     sfText* text;
 };
@@ -25,3 +26,5 @@ void asteroid_oob(limit_x, limit_y);
 int asteroid_collision(collider_position, collider_size, lethal);
 
 void asteroid_to_asteroid_collision();
+
+void asteroid_death(i);

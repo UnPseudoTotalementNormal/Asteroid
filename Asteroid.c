@@ -15,18 +15,40 @@ typedef int bool;
 struct Asteroid asteroid_list[1000];
 int max_asteroid = 1000;
 
-void create_asteroid(int WINDOW_X, int WINDOW_Y) {
+void create_asteroid(int x, int y, int size) {
 	for (int i = 0; i < max_asteroid; i++) {
 		if (asteroid_list[i].text == NULL || asteroid_list[i].dead == true) {
+			int WINDOW_X = sfVideoMode_getDesktopMode().width;
+			int WINDOW_Y = sfVideoMode_getDesktopMode().height;
 			asteroid_list[i].dead = false;
-			asteroid_list[i].position.x = (rand() % WINDOW_X);
-			asteroid_list[i].position.y = (rand() % WINDOW_Y);
+			if (x == 0) {
+				asteroid_list[i].position.x = (rand() % WINDOW_X);
+			}
+			if (y == 0) {
+				asteroid_list[i].position.y = (rand() % WINDOW_Y);
+			}
 			asteroid_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");
 			asteroid_list[i].text = sfText_create();
 			sfText_setFont(asteroid_list[i].text, asteroid_list[i].font);
-			sfText_setString(asteroid_list[i].text, "O");
-			sfText_setCharacterSize(asteroid_list[i].text, (float)WINDOW_X * 150.0 / 2560.0);
-			sfText_setOrigin(asteroid_list[i].text, (sfVector2f) { sfText_getLocalBounds(asteroid_list[i].text).width / 2, sfText_getLocalBounds(asteroid_list[i].text).height - (WINDOW_X * 12/ 2560) });
+			asteroid_list[i].size = size;
+			switch (size)
+			{
+			case 1:
+				sfText_setString(asteroid_list[i].text, "o");
+				sfText_setCharacterSize(asteroid_list[i].text, (float)WINDOW_X * 100.0 / 2560.0);
+				sfText_setOrigin(asteroid_list[i].text, (sfVector2f) { sfText_getLocalBounds(asteroid_list[i].text).width / 2, sfText_getLocalBounds(asteroid_list[i].text).height - (WINDOW_X * -25 / 2560) });
+				break;
+			case 2:
+				sfText_setString(asteroid_list[i].text, "O");
+				sfText_setCharacterSize(asteroid_list[i].text, (float)WINDOW_X * 150.0 / 2560.0);
+				sfText_setOrigin(asteroid_list[i].text, (sfVector2f) { sfText_getLocalBounds(asteroid_list[i].text).width / 2, sfText_getLocalBounds(asteroid_list[i].text).height - (WINDOW_X * 15 / 2560) });
+				break;
+			case 3:
+				sfText_setString(asteroid_list[i].text, "O");
+				sfText_setCharacterSize(asteroid_list[i].text, (float)WINDOW_X * 200.0 / 2560.0);
+				sfText_setOrigin(asteroid_list[i].text, (sfVector2f) { sfText_getLocalBounds(asteroid_list[i].text).width / 2, sfText_getLocalBounds(asteroid_list[i].text).height - (WINDOW_X * 20 / 2560) });
+			}
+			set_asteroid_random_force(i);
 			break;
 		}
 	}
@@ -38,6 +60,7 @@ void set_asteroid_random_force(int i) {
 	float direction_y = sinf(rand_angle * 3.1415 / 180.0);
 	float rand_force = (float)(rand() % 3 + 2) /10.0;
 	float rand_angle_speed = (float)(rand() % 6 + 1) / 10.0;
+	rand_angle_speed = 0.5;
 	asteroid_list[i].force = (sfVector2f){ rand_force * direction_x, rand_force * direction_y };
 	asteroid_list[i].angle_speed = rand_angle_speed;
 }
@@ -87,13 +110,37 @@ int asteroid_collision(sfVector2f collider_position, int collider_size, int leth
 			float asteroid_size = sfText_getLocalBounds(asteroid_list[i].text).width;
 			if (distance < (collider_size + asteroid_size) /3) {
 				if (lethal == true) {
-					asteroid_list[i].dead = true;
+					asteroid_death(i);
 				}
 				return 1;
 			}
 		}
 	}
 	return 0;
+}
+
+void asteroid_death(int i) {
+	asteroid_list[i].dead = true;
+	asteroid_list[i].size -= 1;
+	
+	switch (asteroid_list[i].size)
+	{
+	case 1:
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		break;
+	case 2:
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		break;
+	case 3:
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x, asteroid_list[i].position.y, asteroid_list[i].size);
+		break;
+	default:
+		break;
+	}
+	
 }
 
 void asteroid_to_asteroid_collision() {

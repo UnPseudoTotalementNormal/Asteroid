@@ -70,8 +70,7 @@ void main() {
     sfClock* animclock = sfClock_create();
 
     for (int i = 0; i < 15; i++) {
-        create_asteroid(WINDOW_X, WINDOW_Y);
-        set_asteroid_random_force(i);
+        create_asteroid(0, 0, 3);
     }
     
     struct Ship Player = {
