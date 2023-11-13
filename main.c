@@ -11,10 +11,25 @@
 #include "Asteroid.h"
 #include "Deltatime.h"
 #include "ButtonPress.h"
+#include "Menu.h"
 
 typedef int bool;
 #define true 1
 #define false 0
+
+void draw_game(sfRenderWindow* window, struct Ship Player, sfFont* font1) {
+    sfText* heat_text = sfText_create();
+    sfText_setFont(heat_text, font1);
+    char heat_char[12];
+    snprintf(heat_char, 12, "Heat: %f", Player.heat);
+    sfText_setString(heat_text, heat_char);
+
+    sfRenderWindow_drawText(window, Player.text, NULL);
+    sfRenderWindow_drawText(window, heat_text, NULL);
+
+    draw_asteroids(window);
+    draw_bullets(window);
+}
 
 void player_controller(struct Ship* Player1, struct Ship* Player2) {
     if (sfKeyboard_isKeyPressed(sfKeyUp)) {
@@ -72,6 +87,8 @@ void main() {
     for (int i = 0; i < 15; i++) {
         create_asteroid(0, 0, 2);
     }
+
+    int menu_state = MAIN_MENU;
     
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
@@ -81,7 +98,7 @@ void main() {
         .speed = 0.008 * ratio_x,
         .max_speed = 4.0 * ratio_x,
         .angle_speed = 0.5,
-        .recoil_force = 6.0 * ratio_x,
+        .recoil_force = 7.0 * ratio_x,
         .heat = 0,
         .unheat_speed = 0.0003,
         .overheat = false,
@@ -123,20 +140,23 @@ void main() {
         asteroid_oob(WINDOW_X, WINDOW_Y);
 
         ////// DRAW /////
-        sfText* heat_text = sfText_create();
-        sfText_setFont(heat_text, font1);
-        char heat_char[12];
-        snprintf(heat_char, 12, "Heat: %f", Player.heat);
-        sfText_setString(heat_text, heat_char);
-
         sfRenderWindow_clear(window, sfTransparent);
 
-        sfRenderWindow_drawText(window, Player.text, NULL);
-        sfRenderWindow_drawText(window, heat_text, NULL);
+        switch (menu_state)
+        {
+        case MAIN_MENU:
+            draw_main_menu(window, font1);
+            break;
+        case GAME_MODE_MENU:
+            break;
+        case IN_GAME:
+            draw_game(window, Player, font1);
+            break;
+        default:
+            draw_main_menu(window, font1);
+            break;
+        }
         
-        draw_asteroids(window);
-        draw_bullets(window);
-
         sfRenderWindow_display(window);
         /////////////////
 

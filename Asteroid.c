@@ -137,16 +137,16 @@ void asteroid_death(int i) {
 	switch (asteroid_list[i].size)
 	{
 	case 1:
-		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 50, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 50, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	case 2:
-		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 50, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 50, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	case 3:
-		create_asteroid(asteroid_list[i].position.x + 30, asteroid_list[i].position.y, asteroid_list[i].size);
-		create_asteroid(asteroid_list[i].position.x - 30, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x + 50, asteroid_list[i].position.y, asteroid_list[i].size);
+		create_asteroid(asteroid_list[i].position.x - 50, asteroid_list[i].position.y, asteroid_list[i].size);
 		break;
 	default:
 		break;

@@ -136,6 +136,7 @@
     <ClCompile Include="ButtonPress.c" />
     <ClCompile Include="Deltatime.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Menu.c" />
     <ClCompile Include="Player.c" />
     <ClCompile Include="Vector2_tools.c" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="ButtonPress.h" />
     <ClInclude Include="Deltatime.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Vector2_tools.h" />
   </ItemGroup>
