@@ -71,17 +71,18 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
     ship_oob(Player1, WINDOW_X, WINDOW_Y);
     ship_heat_system(Player1);
 
-    ship_movement(Player2);
-    ship_oob(Player2, WINDOW_X, WINDOW_Y);
-    ship_heat_system(Player2);
-
-
     if (asteroid_collision(Player1 -> position, sfText_getCharacterSize(Player1 -> text), false) == true) {
         ship_death(Player1);
     }
 
-    if (asteroid_collision(Player2 -> position, sfText_getCharacterSize(Player2 -> text), false) == true) {
-        ship_death(Player2);
+    if (Player2 != NULL) {
+        ship_movement(Player2);
+        ship_oob(Player2, WINDOW_X, WINDOW_Y);
+        ship_heat_system(Player2);
+
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true) {
+            ship_death(Player2);
+        }
     }
 }
 
@@ -108,7 +109,10 @@ void main() {
         create_asteroid(0, 0, 2);
     }
 
-    int menu_state = MAIN_MENU;
+    struct GameSettings GSettings = {
+        .menu_states = MAIN_MENU,
+        .singleplayer = true,
+    };
     
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
@@ -165,8 +169,14 @@ void main() {
         }
         DeltaTime();
 
-        player_controller(&Player, &Player2);
-        player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y);
+        if (GSettings.singleplayer) {
+            player_controller(&Player, NULL);
+            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y);
+        }
+        else {
+            player_controller(&Player, &Player2);
+            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y);
+        }
         
 
         bullet_oob(WINDOW_X, WINDOW_Y);
@@ -180,10 +190,10 @@ void main() {
         ////// DRAW /////
         sfRenderWindow_clear(window, sfTransparent);
 
-        switch (menu_state)
+        switch (GSettings.menu_states)
         {
         case MAIN_MENU:
-            menu_state = draw_main_menu(window, font1);
+            draw_main_menu(window, font1, &GSettings);
             break;
         case GAME_MODE_MENU:
             break;
@@ -191,7 +201,7 @@ void main() {
             draw_game(window, Player, Player2, font1);
             break;
         default:
-            draw_main_menu(window, font1);
+            GSettings.menu_states = MAIN_MENU;
             break;
         }
         

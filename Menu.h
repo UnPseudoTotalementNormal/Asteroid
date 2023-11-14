@@ -4,7 +4,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
-struct Game_Settings {
+struct GameSettings {
+	int menu_states;
 	bool singleplayer;
 };
 

@@ -14,7 +14,7 @@ typedef int bool;
 
 
 
-int draw_main_menu(sfRenderWindow* window, sfFont* font) {
+int draw_main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
 
@@ -47,16 +47,23 @@ int draw_main_menu(sfRenderWindow* window, sfFont* font) {
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
 
-    return input_main_menu(window, singleplayer_text, multiplayer_text, quit_text);
+    input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings);
 }
 
-int input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton) {
+int input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings) {
     sfFloatRect singlerect = sfText_getGlobalBounds(singlebutton);
     sfFloatRect multirect = sfText_getGlobalBounds(multibutton);
     sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
-    if (sfFloatRect_intersects(&singlerect, &mouserect, NULL) == true) {
-        return IN_GAME;
+    if (sfFloatRect_intersects(&singlerect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = GAME_MODE_MENU;
+        Gsettings->singleplayer = true;
     }
-    return MAIN_MENU;
+    if (sfFloatRect_intersects(&multirect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = GAME_MODE_MENU;
+        Gsettings->singleplayer = false;
+    }
+    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        sfRenderWindow_close(window);
+    }
 }
