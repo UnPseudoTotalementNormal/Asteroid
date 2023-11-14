@@ -88,6 +88,12 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
     }
 }
 
+void launch_game(struct GameSettings GSettings) {
+    for (int i = 0; i < GSettings.Nasteroid; i++) {
+        create_asteroid(0, 0, 2);
+    }
+}
+
 void main() {
     srand(time(0));
     InitDelta();
@@ -107,13 +113,10 @@ void main() {
     sfClock* deltaclock = sfClock_create();
     sfClock* animclock = sfClock_create();
 
-    for (int i = 0; i < 15; i++) {
-        create_asteroid(0, 0, 2);
-    }
-
     struct GameSettings GSettings = {
         .menu_states = MAIN_MENU,
         .singleplayer = true,
+        .Nasteroid = 15,
     };
     
     struct Ship Player = {
@@ -202,6 +205,10 @@ void main() {
             break;
         case IN_GAME:
             draw_game(window, Player, Player2, font1, GSettings);
+            break;
+        case LAUNCHING:
+            launch_game(GSettings);
+            GSettings.menu_states = IN_GAME;
             break;
         default:
             GSettings.menu_states = MAIN_MENU;

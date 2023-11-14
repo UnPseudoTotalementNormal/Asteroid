@@ -7,13 +7,15 @@ typedef int bool;
 struct GameSettings {
 	int menu_states;
 	bool singleplayer;
+	int Nasteroid;
 };
 
 enum MENU_STATES
 {
 	MAIN_MENU,
 	GAME_MODE_MENU,
-	IN_GAME
+	IN_GAME,
+	LAUNCHING,
 };
 
 void main_menu(window, font, Gsettings);

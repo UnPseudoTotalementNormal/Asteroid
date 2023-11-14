@@ -107,8 +107,7 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
     if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        
-        Gsettings->menu_states = IN_GAME;
+        Gsettings->menu_states = LAUNCHING;
     }
     if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
         Gsettings->menu_states = MAIN_MENU;
