@@ -8,7 +8,11 @@
 #include "Vector2_tools.h"
 #include "Menu.h"
 
-void draw_main_menu(sfRenderWindow* window, sfFont* font) {
+typedef int bool;
+#define true 1
+#define false 0
+
+int draw_main_menu(sfRenderWindow* window, sfFont* font) {
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
 
@@ -40,5 +44,17 @@ void draw_main_menu(sfRenderWindow* window, sfFont* font) {
     sfRenderWindow_drawText(window, multiplayer_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
+
+    return input_main_menu(window, singleplayer_text, multiplayer_text, quit_text);
 }
 
+int input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton) {
+    sfFloatRect singlerect = sfText_getGlobalBounds(singlebutton);
+    sfFloatRect multirect = sfText_getGlobalBounds(multibutton);
+    sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
+    sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
+    if (sfFloatRect_intersects(&singlerect, &mouserect, NULL) == true) {
+        return IN_GAME;
+    }
+    return MAIN_MENU;
+}

@@ -7,4 +7,6 @@ enum MENU_STATES
 	IN_GAME
 };
 
-void draw_main_menu(window, font);
+int draw_main_menu(window, font);
+
+int input_main_menu(window, singlebutton, multibutton, quitbutton);

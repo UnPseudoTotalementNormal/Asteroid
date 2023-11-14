@@ -13,8 +13,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
-struct Bullet bullet_list[100];
-int max_bullet = 100;
+struct Bullet bullet_list[30];
+int max_bullet = 30;
 
 void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force) {
 	for (int i = 0; i < max_bullet; i++) {

@@ -145,7 +145,7 @@ void main() {
         switch (menu_state)
         {
         case MAIN_MENU:
-            draw_main_menu(window, font1);
+            menu_state = draw_main_menu(window, font1);
             break;
         case GAME_MODE_MENU:
             break;
