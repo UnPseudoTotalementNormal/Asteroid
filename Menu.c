@@ -12,9 +12,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-
-
-int draw_main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
+void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
 
@@ -50,7 +48,7 @@ int draw_main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gs
     input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings);
 }
 
-int input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings) {
+void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings) {
     sfFloatRect singlerect = sfText_getGlobalBounds(singlebutton);
     sfFloatRect multirect = sfText_getGlobalBounds(multibutton);
     sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
@@ -65,5 +63,54 @@ int input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multib
     }
     if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
         sfRenderWindow_close(window);
+    }
+}
+
+void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
+    int WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float ratio_x = WINDOW_X / 2560;
+
+    sfText* title_text = sfText_create();
+    sfText_setFont(title_text, font);
+    sfText_setString(title_text, "Shotgunnin' Space");
+    sfText_setCharacterSize(title_text, 120 * ratio_x);
+    sfText_setPosition(title_text, (sfVector2f) { -sfText_getLocalBounds(title_text).width / 2 + WINDOW_X / 2, 50 * ratio_x });
+
+    sfText* subtitle_text = sfText_create();
+    sfText_setFont(subtitle_text, font);
+    sfText_setString(subtitle_text, "Choose the modifiers");
+    sfText_setCharacterSize(subtitle_text, 90 * ratio_x);
+    sfText_setPosition(subtitle_text, (sfVector2f) { -sfText_getLocalBounds(subtitle_text).width / 2 + WINDOW_X / 2, 200 * ratio_x });
+
+    sfText* play_text = sfText_create();
+    sfText_setFont(play_text, font);
+    sfText_setString(play_text, "Play");
+    sfText_setCharacterSize(play_text, 80 * ratio_x);
+    sfText_setPosition(play_text, (sfVector2f) { -sfText_getLocalBounds(play_text).width / 2 + 900 * ratio_x, 1200 * ratio_x });
+
+    sfText* return_text = sfText_create();
+    sfText_setFont(return_text, font);
+    sfText_setString(return_text, "Return");
+    sfText_setCharacterSize(return_text, 80 * ratio_x);
+    sfText_setPosition(return_text, (sfVector2f) { -sfText_getLocalBounds(return_text).width / 2 + WINDOW_X - 900 * ratio_x, 1200 * ratio_x });
+
+    sfRenderWindow_drawText(window, title_text, NULL);
+    sfRenderWindow_drawText(window, subtitle_text, NULL);
+    sfRenderWindow_drawText(window, play_text, NULL);
+    sfRenderWindow_drawText(window, return_text, NULL);
+
+    input_game_mode_menu(window, play_text, return_text, Gsettings);
+}
+
+void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, struct GameSettings* Gsettings) {
+    sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
+    sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
+    sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        
+        Gsettings->menu_states = IN_GAME;
+    }
+    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = MAIN_MENU;
     }
 }

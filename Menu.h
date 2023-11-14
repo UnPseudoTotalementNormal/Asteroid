@@ -16,6 +16,10 @@ enum MENU_STATES
 	IN_GAME
 };
 
-int draw_main_menu(window, font);
+void main_menu(window, font, Gsettings);
 
-int input_main_menu(window, singlebutton, multibutton, quitbutton);
+void input_main_menu(window, singlebutton, multibutton, quitbutton, Gsettings);
+
+void game_mode_menu(window, font, Gsettings);
+
+void input_game_mode_menu(window, playbutton, returnbutton, Gsettings);

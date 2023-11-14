@@ -17,7 +17,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1) {
+void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings) {
     sfText* heat_text = sfText_create();
     sfText_setFont(heat_text, font1);
     char heat_char[12];
@@ -25,7 +25,9 @@ void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, 
     sfText_setString(heat_text, heat_char);
 
     sfRenderWindow_drawText(window, Player.text, NULL);
-    sfRenderWindow_drawText(window, Player2.text, NULL);
+    if (GSettings.singleplayer == false) {
+        sfRenderWindow_drawText(window, Player2.text, NULL);
+    }
     sfRenderWindow_drawText(window, heat_text, NULL);
 
     draw_asteroids(window);
@@ -193,12 +195,13 @@ void main() {
         switch (GSettings.menu_states)
         {
         case MAIN_MENU:
-            draw_main_menu(window, font1, &GSettings);
+            main_menu(window, font1, &GSettings);
             break;
         case GAME_MODE_MENU:
+            game_mode_menu(window, font1, &GSettings);
             break;
         case IN_GAME:
-            draw_game(window, Player, Player2, font1);
+            draw_game(window, Player, Player2, font1, GSettings);
             break;
         default:
             GSettings.menu_states = MAIN_MENU;
