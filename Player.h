@@ -30,3 +30,5 @@ void ship_shotgun(ship);
 void ship_heat_system(ship);
 
 void ship_oob(ship, limit_x, limit_y);
+
+void ship_death();

@@ -17,7 +17,7 @@ typedef int bool;
 #define true 1
 #define false 0
 
-void draw_game(sfRenderWindow* window, struct Ship Player, sfFont* font1) {
+void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1) {
     sfText* heat_text = sfText_create();
     sfText_setFont(heat_text, font1);
     char heat_char[12];
@@ -25,6 +25,7 @@ void draw_game(sfRenderWindow* window, struct Ship Player, sfFont* font1) {
     sfText_setString(heat_text, heat_char);
 
     sfRenderWindow_drawText(window, Player.text, NULL);
+    sfRenderWindow_drawText(window, Player2.text, NULL);
     sfRenderWindow_drawText(window, heat_text, NULL);
 
     draw_asteroids(window);
@@ -62,6 +63,25 @@ void player_controller(struct Ship* Player1, struct Ship* Player2) {
                 ship_shotgun(Player2);
             }
         }
+    }
+}
+
+void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y) {
+    ship_movement(Player1);
+    ship_oob(Player1, WINDOW_X, WINDOW_Y);
+    ship_heat_system(Player1);
+
+    ship_movement(Player2);
+    ship_oob(Player2, WINDOW_X, WINDOW_Y);
+    ship_heat_system(Player2);
+
+
+    if (asteroid_collision(Player1 -> position, sfText_getCharacterSize(Player1 -> text), false) == true) {
+        ship_death(Player1);
+    }
+
+    if (asteroid_collision(Player2 -> position, sfText_getCharacterSize(Player2 -> text), false) == true) {
+        ship_death(Player2);
     }
 }
 
@@ -109,10 +129,34 @@ void main() {
         .text = sfText_create(),
     };
 
+    struct Ship Player2 = {
+        .position = (sfVector2f) {WINDOW_X / 1.5, WINDOW_Y / 1.5},
+        .force = (sfVector2f) {0, 0},
+        .decceleration = 0.005 * ratio_x,
+        .angle = -90,
+        .speed = 0.008 * ratio_x,
+        .max_speed = 4.0 * ratio_x,
+        .angle_speed = 0.5,
+        .recoil_force = 7.0 * ratio_x,
+        .heat = 0,
+        .unheat_speed = 0.0003,
+        .overheat = false,
+        .unheat_time = 1000,
+        .overheat_time = 2500,
+        .heat_clock = sfClock_create(),
+        .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
+        .text = sfText_create(),
+    };
+
     sfText_setFont(Player.text, Player.font);
     sfText_setString(Player.text, "A");
     sfText_setCharacterSize(Player.text, ratio_x * 125.0);
     sfText_setOrigin(Player.text, (sfVector2f) { sfText_getLocalBounds(Player.text).width / 2, sfText_getLocalBounds(Player.text).height });
+
+    sfText_setFont(Player2.text, Player2.font);
+    sfText_setString(Player2.text, "A");
+    sfText_setCharacterSize(Player2.text, ratio_x * 125.0);
+    sfText_setOrigin(Player2.text, (sfVector2f) { sfText_getLocalBounds(Player2.text).width / 2, sfText_getLocalBounds(Player2.text).height });
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
         while (sfRenderWindow_pollEvent(window, &event)) {
@@ -121,15 +165,9 @@ void main() {
         }
         DeltaTime();
 
-        player_controller(&Player, NULL);
-        ship_movement(&Player);
-        ship_oob(&Player, WINDOW_X, WINDOW_Y);
-        ship_heat_system(&Player);
-        if (asteroid_collision(Player.position, sfText_getCharacterSize(Player.text), false) == true) {
-            Player.position.y = WINDOW_Y/2;
-            Player.position.x = WINDOW_X/2;
-            Player.force = (sfVector2f){ 0, 0 };
-        }
+        player_controller(&Player, &Player2);
+        player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y);
+        
 
         bullet_oob(WINDOW_X, WINDOW_Y);
         move_bullets();
@@ -150,7 +188,7 @@ void main() {
         case GAME_MODE_MENU:
             break;
         case IN_GAME:
-            draw_game(window, Player, font1);
+            draw_game(window, Player, Player2, font1);
             break;
         default:
             draw_main_menu(window, font1);

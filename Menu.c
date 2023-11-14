@@ -12,6 +12,8 @@ typedef int bool;
 #define true 1
 #define false 0
 
+
+
 int draw_main_menu(sfRenderWindow* window, sfFont* font) {
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;

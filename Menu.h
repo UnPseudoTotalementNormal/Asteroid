@@ -1,5 +1,13 @@
 #pragma once
 
+typedef int bool;
+#define true 1
+#define false 0
+
+struct Game_Settings {
+	bool singleplayer;
+};
+
 enum MENU_STATES
 {
 	MAIN_MENU,

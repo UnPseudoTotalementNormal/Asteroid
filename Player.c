@@ -112,3 +112,11 @@ void ship_oob(struct Ship ship, int limit_x, int limit_y) {
 		ship.position.y = limit_y + offset;
 	}
 }
+
+void ship_death(struct Ship ship) {
+	int WINDOW_X = sfVideoMode_getDesktopMode().width;
+	int WINDOW_Y = sfVideoMode_getDesktopMode().height;
+	ship.position.y = WINDOW_Y / 2;
+	ship.position.x = WINDOW_X / 2;
+	ship.force = (sfVector2f){ 0, 0 };
+}
