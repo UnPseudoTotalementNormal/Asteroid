@@ -15,7 +15,6 @@ typedef int bool;
 #define max_asteroid 200
 struct Asteroid asteroid_list[max_asteroid];
 
-
 void create_asteroid(int x, int y, int size) {
 	for (int i = 0; i < max_asteroid; i++) {
 		if (asteroid_list[i].text == NULL || asteroid_list[i].dead == true) {
@@ -180,4 +179,14 @@ void asteroid_to_asteroid_collision() {
 			}
 		}
 	}
+}
+
+int GetAsteroidCount() {
+	int count = 0;
+	for (int i = 0; i < max_asteroid; i++) {
+		if (asteroid_list[i].text != NULL && asteroid_list[i].dead == false) {
+			count += 1;
+		}
+	}
+	return count;
 }

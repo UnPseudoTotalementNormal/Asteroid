@@ -73,7 +73,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
     ship_oob(Player1, WINDOW_X, WINDOW_Y);
     ship_heat_system(Player1);
 
-    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) == true || (bullet_to_ship_collision(Player1)) && GSettings.versusmode == true) {
+    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings.versusmode) {
         ship_death(Player1);
     }
 
@@ -82,15 +82,28 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
 
-        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true || (bullet_to_ship_collision(Player2)) && GSettings.versusmode == true) {
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings.versusmode) {
             ship_death(Player2);
         }
     }
 }
 
-void launch_game(struct GameSettings GSettings) {
-    for (int i = 0; i < GSettings.Nasteroid; i++) {
-        create_asteroid(0, 0, 2);
+void launch_game(struct GameSettings* GSettings, int *spawntimer, int *maxasteroid) {
+    GSettings -> menu_states = IN_GAME;
+    switch (GSettings -> difficulty)
+    {
+    case 1: //easy
+        *spawntimer = 1500;
+        *maxasteroid = 20;
+        break;
+    case 2: //medium
+        *spawntimer = 2000;
+        *maxasteroid = 25;
+        break;
+    case 3: //hard
+        *spawntimer = 3000;
+        *maxasteroid = 30;
+        break;
     }
 }
 
@@ -168,6 +181,10 @@ void main() {
     sfText_setString(Player2.text, "A");
     sfText_setCharacterSize(Player2.text, ratio_x * 125.0);
     sfText_setOrigin(Player2.text, (sfVector2f) { sfText_getLocalBounds(Player2.text).width / 2, sfText_getLocalBounds(Player2.text).height });
+    
+    sfClock* AsteroidSpawnerClock = sfClock_create();
+    int AsteroidTimeSpawn = 0; 
+    int MaxAsteroid = 0;
     while (sfRenderWindow_isOpen(window)) {
         sfEvent event;
         while (sfRenderWindow_pollEvent(window, &event)) {
@@ -194,6 +211,12 @@ void main() {
         move_asteroids();
         asteroid_oob(WINDOW_X, WINDOW_Y);
 
+        sfTime Asterotime = sfClock_getElapsedTime(AsteroidSpawnerClock);
+        if (sfTime_asMilliseconds(Asterotime) > AsteroidTimeSpawn && GetAsteroidCount() < MaxAsteroid && GSettings.menu_states == IN_GAME) {
+            sfClock_restart(AsteroidSpawnerClock);
+            create_asteroid(0, 0, GSettings.difficulty);
+        }
+
         ////// DRAW /////
         sfRenderWindow_clear(window, sfTransparent);
 
@@ -209,8 +232,7 @@ void main() {
             draw_game(window, Player, Player2, font1, GSettings);
             break;
         case LAUNCHING:
-            launch_game(GSettings);
-            GSettings.menu_states = IN_GAME;
+            launch_game(&GSettings, &AsteroidTimeSpawn, &MaxAsteroid);
             break;
         default:
             GSettings.menu_states = MAIN_MENU;
