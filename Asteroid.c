@@ -66,6 +66,10 @@ void create_asteroid(int x, int y, int size) {
 
 void set_asteroid_random_force(int i) {
 	float rand_angle = (rand() % 36000) / 100.0;
+	if ((int)rand_angle % 90 < 20) {
+		set_asteroid_random_force(i);
+		return;
+	}
 	float direction_x = cosf(rand_angle * 3.1415 / 180.0);
 	float direction_y = sinf(rand_angle * 3.1415 / 180.0);
 	float rand_force = (float)(rand() % 3 + 2) /10.0;
