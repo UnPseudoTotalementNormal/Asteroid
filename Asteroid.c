@@ -190,3 +190,13 @@ int GetAsteroidCount() {
 	}
 	return count;
 }
+
+void DestroyAllAsteroids() {
+	for (int i = 0; i < max_asteroid; i++) {
+		if (asteroid_list[i].text != NULL) {
+			sfText_destroy(asteroid_list[i].text);
+			sfFont_destroy(asteroid_list[i].font);
+			asteroid_list[i].text = NULL;
+		}
+	}
+}

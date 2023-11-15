@@ -113,3 +113,14 @@ int bullet_to_ship_collision(struct Ship ship) {
 	}
 	return false;
 }
+
+void DestroyAllBullets() {
+	for (int i = 0; i < max_bullet; i++) {
+		if (bullet_list[i].text != NULL) {
+			sfText_destroy(bullet_list[i].text);
+			sfFont_destroy(bullet_list[i].font);
+			sfClock_destroy(bullet_list[i].lifetimeclock);
+			bullet_list[i].text = NULL;
+		}
+	}
+}

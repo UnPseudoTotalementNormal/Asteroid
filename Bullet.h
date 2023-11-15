@@ -26,3 +26,5 @@ void draw_bullets(window);
 void bullet_oob(limit_x, limit_y);
 
 int bullet_to_ship_collision(ship);
+
+void DestroyAllBullets();

@@ -97,6 +97,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
 }
 
 void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Ship *Player2, int *spawntimer, int *maxasteroid, int WINDOW_X, int WINDOW_Y) {
+    DestroyAllAsteroids();
     float ratio = WINDOW_X / 2560;
     GSettings -> menu_states = IN_GAME;
     Player1->life = 3;
@@ -137,7 +138,6 @@ void main() {
     sfRenderWindow_setFramerateLimit(window, 165);
 
     sfClock* deltaclock = sfClock_create();
-    sfClock* animclock = sfClock_create();
 
     struct GameSettings GSettings = {
         .menu_states = MAIN_MENU,
@@ -145,7 +145,7 @@ void main() {
         .Nasteroid = 15,
         .versusmode = false,
         .difficulty = 1,
-        .infinite_respawn = true,
+        .infinite_respawn = false,
     };
 
     struct Ship Player = {
@@ -261,6 +261,15 @@ void main() {
         ButtonCheck();
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
     }
-
+    DestroyAllAsteroids();
+    DestroyAllBullets();
+    sfRenderWindow_destroy(window);
+    sfText_destroy(Player.text);
+    sfText_destroy(Player2.text);
+    sfClock_destroy(Player.heat_clock);
+    sfClock_destroy(Player2.heat_clock);
+    sfFont_destroy(Player.font);
+    sfFont_destroy(Player2.font);
+    sfClock_destroy(AsteroidSpawnerClock);
     sfClock_destroy(deltaclock);
 }

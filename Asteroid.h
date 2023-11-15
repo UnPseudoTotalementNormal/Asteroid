@@ -30,3 +30,5 @@ void asteroid_to_asteroid_collision();
 void asteroid_death(i);
 
 int GetAsteroidCount();
+
+void DestroyAllAsteroids();
