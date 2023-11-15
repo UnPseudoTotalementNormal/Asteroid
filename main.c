@@ -17,9 +17,10 @@ typedef int bool;
 #define true 1
 #define false 0
 
-void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, int WINDOW_X) {
+void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, float WINDOW_X) {
     sfText* life1_text = sfText_create();
     sfText_setFont(life1_text, font1);
+    sfText_setCharacterSize(life1_text, WINDOW_X * 50 / 2560);
     char life1_char[12];
     snprintf(life1_char, 12, "Lives: %d", Player.life);
     sfText_setString(life1_text, life1_char);
@@ -36,7 +37,7 @@ void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont
     }
 }
 
-void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, int WINDOW_X) {
+void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, float WINDOW_X) {
     sfRenderWindow_drawText(window, Player.text, NULL);
     if (GSettings.singleplayer == false) {
         sfRenderWindow_drawText(window, Player2.text, NULL);
@@ -114,14 +115,14 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
     DestroyAllAsteroids();
     ship_death(Player1);
     ship_death(Player2);
-    float ratio = WINDOW_X / 2560;
+    float ratio = (float)WINDOW_X / 2560.0;
     GSettings -> menu_states = IN_GAME;
     Player1->life = 3;
     Player2->life = 3;
     Player1->dead = false;
     Player2->dead = false;
-    Player1->position = (sfVector2f){ WINDOW_X / 2 - 200 * ratio, WINDOW_Y / 2 };
-    Player2->position = (sfVector2f){ WINDOW_X / 2 + 200 * ratio, WINDOW_Y / 2 };
+    Player1->position = (sfVector2f){ (float)WINDOW_X / 2.0 - 200 * ratio, WINDOW_Y / 2 };
+    Player2->position = (sfVector2f){ (float)WINDOW_X / 2.0 + 200 * ratio, WINDOW_Y / 2 };
     switch (GSettings -> difficulty)
     {
     case 1: //easy
@@ -279,7 +280,6 @@ void main() {
         sfRenderWindow_display(window);
         /////////////////
 
-        ButtonCheck();
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) {
             if (!IsButtonPressed(sfKeyEscape)) {
                 if (GSettings.menu_states == IN_GAME) {
@@ -290,6 +290,7 @@ void main() {
                 }
             }
         }
+        ButtonCheck();
     }
     DestroyAllAsteroids();
     DestroyAllBullets();

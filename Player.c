@@ -98,7 +98,7 @@ void ship_heat_system(struct Ship ship) {
 }
 
 void ship_oob(struct Ship ship, int limit_x, int limit_y) {
-	int offset = 40;
+	float offset = limit_x * 40.0 / 2560.0;
 	if (ship.position.x + ship.force.x > limit_x + offset) {
 		ship.position.x = 0 - offset;
 	}
@@ -120,6 +120,7 @@ void ship_death(struct Ship ship) {
 	ship.position.x = WINDOW_X / 2;
 	ship.force = (sfVector2f){ 0, 0 };
 	ship.heat = 0;
+	ship.overheat = false;
 	ship.life -= 1;
 	ship.angle = -90;
 	if (ship.life <= 0) {

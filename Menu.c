@@ -14,8 +14,8 @@ typedef int bool;
 #define false 0
 
 void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
-    int WINDOW_X = sfVideoMode_getDesktopMode().width;
-    float ratio_x = WINDOW_X / 2560;
+    float WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float ratio_x = WINDOW_X / 2560.0;
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -68,8 +68,8 @@ void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multi
 }
 
 void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
-    int WINDOW_X = sfVideoMode_getDesktopMode().width;
-    float ratio_x = WINDOW_X / 2560;
+    float WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float ratio_x = WINDOW_X / 2560.0;
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -144,7 +144,7 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
 }
 
 void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings) {
-    int WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
 
     sfText* title_text = sfText_create();

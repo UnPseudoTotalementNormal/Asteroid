@@ -18,7 +18,7 @@ struct Asteroid asteroid_list[max_asteroid];
 void create_asteroid(int x, int y, int size) {
 	for (int i = 0; i < max_asteroid; i++) {
 		if (asteroid_list[i].text == NULL || asteroid_list[i].dead == true) {
-			int WINDOW_X = sfVideoMode_getDesktopMode().width;
+			float WINDOW_X = sfVideoMode_getDesktopMode().width;
 			int WINDOW_Y = sfVideoMode_getDesktopMode().height;
 			asteroid_list[i].dead = false;
 			asteroid_list[i].position.x = x;
@@ -27,12 +27,12 @@ void create_asteroid(int x, int y, int size) {
 				switch (rand() % 2)
 				{
 				case 0:
-					asteroid_list[i].position.x = (rand() % WINDOW_X);
+					asteroid_list[i].position.x = (rand() % (int)WINDOW_X);
 					asteroid_list[i].position.y = -100;
 					break;
 				case 1:
 					asteroid_list[i].position.x = -100;
-					asteroid_list[i].position.y = (rand() % WINDOW_Y);
+					asteroid_list[i].position.y = (rand() % (int)WINDOW_Y);
 					break;
 				}
 			}
@@ -64,6 +64,8 @@ void create_asteroid(int x, int y, int size) {
 }
 
 void set_asteroid_random_force(int i) {
+	float WINDOW_X = sfVideoMode_getDesktopMode().width;
+	float ratio = WINDOW_X / 2560;
 	float rand_angle = (rand() % 36000) / 100.0;
 	if ((int)rand_angle % 90 < 20) {
 		set_asteroid_random_force(i);
@@ -73,7 +75,7 @@ void set_asteroid_random_force(int i) {
 	float direction_y = sinf(rand_angle * 3.1415 / 180.0);
 	float rand_force = (float)(rand() % 3 + 2) /10.0;
 	float rand_angle_speed = (float)(rand() % 6 + 1) / 10.0;
-	asteroid_list[i].force = (sfVector2f){ rand_force * direction_x, rand_force * direction_y };
+	asteroid_list[i].force = (sfVector2f){ rand_force * direction_x, rand_force * ratio * direction_y };
 	asteroid_list[i].angle_speed = rand_angle_speed;
 }
 
