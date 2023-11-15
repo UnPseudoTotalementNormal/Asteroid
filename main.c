@@ -68,12 +68,12 @@ void player_controller(struct Ship* Player1, struct Ship* Player2) {
     }
 }
 
-void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y) {
+void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings GSettings) {
     ship_movement(Player1);
     ship_oob(Player1, WINDOW_X, WINDOW_Y);
     ship_heat_system(Player1);
 
-    if (asteroid_collision(Player1 -> position, sfText_getCharacterSize(Player1 -> text), false) == true || bullet_to_ship_collision(Player1)) {
+    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) == true || (bullet_to_ship_collision(Player1)) && GSettings.versusmode == true) {
         ship_death(Player1);
     }
 
@@ -82,7 +82,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
 
-        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true || bullet_to_ship_collision(Player2)) {
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true || (bullet_to_ship_collision(Player2)) && GSettings.versusmode == true) {
             ship_death(Player2);
         }
     }
@@ -176,11 +176,11 @@ void main() {
 
         if (GSettings.singleplayer) {
             player_controller(&Player, NULL);
-            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y);
+            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, GSettings);
         }
         else {
             player_controller(&Player, &Player2);
-            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y);
+            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, GSettings);
         }
         
 
