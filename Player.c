@@ -59,7 +59,7 @@ void ship_movement(struct Ship ship) {
 }
 
 void ship_shotgun(struct Ship ship) {
-	ship.heat += 0.25;
+	ship.heat += 0.20;
 	sfClock_restart(ship.heat_clock);
 	ship_add_single_force(&ship, (int)ship.angle, (int)ship.recoil_force);
 	int WINDOW_X = sfVideoMode_getDesktopMode().width;
@@ -119,4 +119,5 @@ void ship_death(struct Ship ship) {
 	ship.position.y = WINDOW_Y / 2;
 	ship.position.x = WINDOW_X / 2;
 	ship.force = (sfVector2f){ 0, 0 };
+	ship.heat = 0;
 }

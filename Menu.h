@@ -10,6 +10,7 @@ struct GameSettings {
 	bool singleplayer;
 	bool versusmode;
 	int difficulty;
+	bool infinite_respawn;
 };
 
 enum MENU_STATES

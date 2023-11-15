@@ -68,13 +68,17 @@ void player_controller(struct Ship* Player1, struct Ship* Player2) {
     }
 }
 
-void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings GSettings) {
+void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings *GSettings) {
     ship_movement(Player1);
     ship_oob(Player1, WINDOW_X, WINDOW_Y);
     ship_heat_system(Player1);
 
-    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings.versusmode) {
+    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings -> versusmode) {
         ship_death(Player1);
+        Player1->life -= 1;
+        if (!GSettings->infinite_respawn && Player1->life <= 0) {
+            GSettings->menu_states = MAIN_MENU;
+        }
     }
 
     if (Player2 != NULL) {
@@ -82,14 +86,23 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
 
-        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings.versusmode) {
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings -> versusmode) {
             ship_death(Player2);
+            Player2->life -= 1;
+            if (!GSettings->infinite_respawn && Player2->life <= 0) {
+                GSettings->menu_states = MAIN_MENU;
+            }
         }
     }
 }
 
-void launch_game(struct GameSettings* GSettings, int *spawntimer, int *maxasteroid) {
+void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Ship *Player2, int *spawntimer, int *maxasteroid, int WINDOW_X, int WINDOW_Y) {
+    float ratio = WINDOW_X / 2560;
     GSettings -> menu_states = IN_GAME;
+    Player1->life = 3;
+    Player2->life = 3;
+    Player1->position = (sfVector2f){ WINDOW_X / 2 - 200 * ratio, WINDOW_Y / 2 };
+    Player2->position = (sfVector2f){ WINDOW_X / 2 + 200 * ratio, WINDOW_Y / 2 };
     switch (GSettings -> difficulty)
     {
     case 1: //easy
@@ -132,6 +145,7 @@ void main() {
         .Nasteroid = 15,
         .versusmode = false,
         .difficulty = 1,
+        .infinite_respawn = true,
     };
 
     struct Ship Player = {
@@ -148,6 +162,7 @@ void main() {
         .overheat = false,
         .unheat_time = 1000,
         .overheat_time = 2500,
+        .life = 3,
         .heat_clock = sfClock_create(),
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
@@ -167,6 +182,7 @@ void main() {
         .overheat = false,
         .unheat_time = 1000,
         .overheat_time = 2500,
+        .life = 3,
         .heat_clock = sfClock_create(),
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
@@ -195,11 +211,11 @@ void main() {
 
         if (GSettings.singleplayer) {
             player_controller(&Player, NULL);
-            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, GSettings);
+            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, &GSettings);
         }
         else {
             player_controller(&Player, &Player2);
-            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, GSettings);
+            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, &GSettings);
         }
         
 
@@ -232,7 +248,7 @@ void main() {
             draw_game(window, Player, Player2, font1, GSettings);
             break;
         case LAUNCHING:
-            launch_game(&GSettings, &AsteroidTimeSpawn, &MaxAsteroid);
+            launch_game(&GSettings, &Player, &Player2, &AsteroidTimeSpawn, &MaxAsteroid, WINDOW_X, WINDOW_Y);
             break;
         default:
             GSettings.menu_states = MAIN_MENU;
