@@ -138,7 +138,7 @@ int asteroid_collision(sfVector2f collider_position, int collider_size, int leth
 				if (lethal == true) {
 					asteroid_death(i);
 				}
-				return 1;
+				return asteroid_list[i].size + 1;
 			}
 		}
 	}

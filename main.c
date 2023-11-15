@@ -31,10 +31,24 @@ void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont
     sfText_setString(life2_text, life2_char);
     sfText_setPosition(life2_text, (sfVector2f){WINDOW_X - sfText_getLocalBounds(life2_text).width, 0});
 
+    sfText* score1_text = sfText_copy(life1_text);
+    char score1_char[12];
+    snprintf(score1_char, 12, "Score: %d", Player.score);
+    sfText_setString(score1_text, score1_char);
+    sfText_setPosition(score1_text, (sfVector2f) { 0, sfText_getLocalBounds(life1_text).height * 1.5 });
+
+    sfText* score2_text = sfText_copy(life1_text);
+    char score2_char[12];
+    snprintf(score2_char, 12, "Score: %d", Player.score);
+    sfText_setString(score2_text, score2_char);
+    sfText_setPosition(score2_text, (sfVector2f) { WINDOW_X - sfText_getLocalBounds(score2_text).width, sfText_getLocalBounds(life2_text).height * 1.5 });
+
     sfRenderWindow_drawText(window, life1_text, NULL);
     if (GSettings.singleplayer == false) {
         sfRenderWindow_drawText(window, life2_text, NULL);
+        sfRenderWindow_drawText(window, score2_text, NULL);
     }
+    sfRenderWindow_drawText(window, score1_text, NULL);
 }
 
 void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, float WINDOW_X) {
@@ -117,6 +131,8 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
     ship_death(Player2);
     float ratio = (float)WINDOW_X / 2560.0;
     GSettings -> menu_states = IN_GAME;
+    Player1->score = 0;
+    Player2->score = 0;
     Player1->life = 3;
     Player2->life = 3;
     Player1->dead = false;

@@ -157,29 +157,40 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
     sfText_setFont(play_text, font);
     sfText_setString(play_text, "Play");
     sfText_setCharacterSize(play_text, 80 * ratio_x);
-    sfText_setPosition(play_text, (sfVector2f) { -sfText_getLocalBounds(play_text).width / 2 + 900 * ratio_x, 1250 * ratio_x });
+    sfText_setPosition(play_text, (sfVector2f) { -sfText_getLocalBounds(play_text).width / 2 + 800 * ratio_x, 1250 * ratio_x });
 
     sfText* return_text = sfText_create();
     sfText_setFont(return_text, font);
     sfText_setString(return_text, "Menu");
     sfText_setCharacterSize(return_text, 80 * ratio_x);
-    sfText_setPosition(return_text, (sfVector2f) { -sfText_getLocalBounds(return_text).width / 2 + WINDOW_X - 900 * ratio_x, 1250 * ratio_x });
+    sfText_setPosition(return_text, (sfVector2f) { -sfText_getLocalBounds(return_text).width / 2 + WINDOW_X - 800 * ratio_x, 1250 * ratio_x });
+
+    sfText* quit_text = sfText_create();
+    sfText_setFont(quit_text, font);
+    sfText_setString(quit_text, "Quit");
+    sfText_setCharacterSize(quit_text, 80 * ratio_x);
+    sfText_setPosition(quit_text, (sfVector2f) { -sfText_getLocalBounds(quit_text).width / 2 + WINDOW_X /2, 1250 * ratio_x });
 
     sfRenderWindow_drawText(window, title_text, NULL);
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, return_text, NULL);
+    sfRenderWindow_drawText(window, quit_text, NULL);
 
-    input_gameover_menu(window, play_text, return_text, GSettings);
+    input_gameover_menu(window, play_text, return_text, quit_text, GSettings);
 }
 
-void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, struct GameSettings* Gsettings) {
+void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* quitbutton, struct GameSettings* Gsettings) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
+    sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
     if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
         Gsettings->menu_states = LAUNCHING;
     }
     if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
         Gsettings->menu_states = MAIN_MENU;
+    }
+    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        sfRenderWindow_close(window);
     }
 }

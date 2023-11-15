@@ -47,8 +47,10 @@ void move_bullets() {
 			bullet_list[i].position.x += bullet_list[i].force.x * delta;
 			bullet_list[i].position.y += bullet_list[i].force.y * delta;
 			bullet_list[i].angle += bullet_list[i].angle_speed * delta;
-			if (asteroid_collision(bullet_list[i].position, sfText_getCharacterSize(bullet_list[i].text), true)) {
+			int asteroid_size_collided = asteroid_collision(bullet_list[i].position, sfText_getCharacterSize(bullet_list[i].text), true);
+			if (asteroid_size_collided != 0) {
 				bullet_list[i].dead = true;
+				bullet_list[i].from->score += 100 * asteroid_size_collided;
 			}
 		}
 	}

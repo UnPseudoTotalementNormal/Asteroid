@@ -17,6 +17,7 @@ struct Ship {
     sfClock* heat_clock;
     int life;
     int dead;
+    int score;
     sfFont *font;
     sfText *text;
 };
