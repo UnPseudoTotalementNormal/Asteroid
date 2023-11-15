@@ -120,4 +120,8 @@ void ship_death(struct Ship ship) {
 	ship.position.x = WINDOW_X / 2;
 	ship.force = (sfVector2f){ 0, 0 };
 	ship.heat = 0;
+	ship.life -= 1;
+	if (ship.life <= 0) {
+		ship.dead = true;
+	}
 }

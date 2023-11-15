@@ -14,8 +14,9 @@ struct Ship {
     int overheat;
     float unheat_time;
     float overheat_time;
-    int life;
     sfClock* heat_clock;
+    int life;
+    bool dead;
     sfFont *font;
     sfText *text;
 };
