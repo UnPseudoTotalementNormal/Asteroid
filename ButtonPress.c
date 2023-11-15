@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <SFML/System.h>
+#include <SFML/Window.h>
 #include "ButtonPress.h"
 
 typedef int bool;
@@ -24,7 +25,7 @@ int IsButtonPressed(int button) {
 int ButtonCheck() {
 	for (int i = 0; i < buttonslen; i++) {
 		if (buttons[i] == true) {
-			if (!sfKeyboard_isKeyPressed(i)) {
+			if (!sfKeyboard_isKeyPressed(i) && !sfMouse_isButtonPressed(i)) {
 				buttons[i] = false;
 			}
 		}

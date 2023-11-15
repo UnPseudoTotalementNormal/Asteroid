@@ -9,6 +9,7 @@ struct GameSettings {
 	int Nasteroid;
 	bool singleplayer;
 	bool versusmode;
+	int difficulty;
 };
 
 enum MENU_STATES

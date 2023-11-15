@@ -117,8 +117,10 @@ void main() {
         .menu_states = MAIN_MENU,
         .singleplayer = true,
         .Nasteroid = 15,
+        .versusmode = false,
+        .difficulty = 1,
     };
-    
+
     struct Ship Player = {
         .position = (sfVector2f) {WINDOW_X / 2, WINDOW_Y / 2},
         .force = (sfVector2f) {0, 0},
