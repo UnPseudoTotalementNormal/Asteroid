@@ -6,8 +6,9 @@ typedef int bool;
 
 struct GameSettings {
 	int menu_states;
-	bool singleplayer;
 	int Nasteroid;
+	bool singleplayer;
+	bool versusmode;
 };
 
 enum MENU_STATES

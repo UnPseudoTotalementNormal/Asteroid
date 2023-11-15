@@ -73,7 +73,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
     ship_oob(Player1, WINDOW_X, WINDOW_Y);
     ship_heat_system(Player1);
 
-    if (asteroid_collision(Player1 -> position, sfText_getCharacterSize(Player1 -> text), false) == true) {
+    if (asteroid_collision(Player1 -> position, sfText_getCharacterSize(Player1 -> text), false) == true || bullet_to_ship_collision(Player1)) {
         ship_death(Player1);
     }
 
@@ -82,7 +82,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
 
-        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true) {
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) == true || bullet_to_ship_collision(Player2)) {
             ship_death(Player2);
         }
     }

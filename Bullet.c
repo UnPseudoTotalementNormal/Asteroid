@@ -7,16 +7,17 @@
 #include "Vector2_tools.h"
 #include "Deltatime.h"
 #include "Asteroid.h"
+#include "Player.h"
 #include "Bullet.h"
 
 typedef int bool;
 #define true 1
 #define false 0
 
-struct Bullet bullet_list[30];
-int max_bullet = 30;
+#define max_bullet 30
+struct Bullet bullet_list[max_bullet];  
 
-void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force) {
+void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force, struct Ship from) {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text == NULL || bullet_list[i].dead == true) {
 			bullet_list[i].dead = false;
@@ -26,6 +27,7 @@ void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, i
 			bullet_list[i].angle = angle + 90;
 			bullet_list[i].maxlifetime = 600;
 			bullet_list[i].lifetimeclock = sfClock_create();
+			bullet_list[i].from = &from;
 			float direction_x = cosf(angle * 3.1415 / 180);
 			float direction_y = sinf(angle * 3.1415 / 180);
 			float bullet_force = (WINDOW_X * (float)force / 2560) / 10;
@@ -93,4 +95,21 @@ void bullet_oob(limit_x, limit_y) {
 			bullet_list[i].position.y = limit_y + offset;
 		}
 	}
+}
+
+int bullet_to_ship_collision(struct Ship ship) {
+	for (int i = 0; i < max_bullet; i++) {
+		if (bullet_list[i].text != NULL && bullet_list[i].dead == false) {
+			float distance_x = bullet_list[i].position.x - ship.position.x;
+			float distance_y = bullet_list[i].position.y - ship.position.y;
+			float distance = Vector2_length((sfVector2f) { distance_x, distance_y });
+			if (distance <= sfText_getCharacterSize(ship.text) / 3 + sfText_getCharacterSize(bullet_list[i].text) / 3) {
+				if (bullet_list[i].from != NULL && bullet_list[i].from != &ship) {
+					bullet_list[i].dead = true;
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }

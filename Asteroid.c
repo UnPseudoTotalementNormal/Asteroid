@@ -12,8 +12,9 @@ typedef int bool;
 #define true 1
 #define false 0
 
-struct Asteroid asteroid_list[1000];
-int max_asteroid = 1000;
+#define max_asteroid 200
+struct Asteroid asteroid_list[max_asteroid];
+
 
 void create_asteroid(int x, int y, int size) {
 	for (int i = 0; i < max_asteroid; i++) {
@@ -23,12 +24,19 @@ void create_asteroid(int x, int y, int size) {
 			asteroid_list[i].dead = false;
 			asteroid_list[i].position.x = x;
 			asteroid_list[i].position.y = y;
-			if (x == 0) {
-				asteroid_list[i].position.x = (rand() % WINDOW_X);
+			if (x == 0 && y == 0) {
+				switch (rand() % 2)
+				{
+				case 0:
+					asteroid_list[i].position.x = (rand() % WINDOW_X);
+					asteroid_list[i].position.y = -100;
+					break;
+				case 1:
+					asteroid_list[i].position.x = -100;
+					asteroid_list[i].position.y = (rand() % WINDOW_Y);
+					break;
+				}
 			}
-			if (y == 0) {
-				asteroid_list[i].position.y = (rand() % WINDOW_Y);
-			} 
 			asteroid_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");
 			asteroid_list[i].text = sfText_create();
 			sfText_setFont(asteroid_list[i].text, asteroid_list[i].font);
@@ -57,12 +65,11 @@ void create_asteroid(int x, int y, int size) {
 }
 
 void set_asteroid_random_force(int i) {
-	float rand_angle = rand() % 360;
+	float rand_angle = (rand() % 36000) / 100.0;
 	float direction_x = cosf(rand_angle * 3.1415 / 180.0);
 	float direction_y = sinf(rand_angle * 3.1415 / 180.0);
 	float rand_force = (float)(rand() % 3 + 2) /10.0;
 	float rand_angle_speed = (float)(rand() % 6 + 1) / 10.0;
-	rand_angle_speed = 0.5;
 	asteroid_list[i].force = (sfVector2f){ rand_force * direction_x, rand_force * direction_y };
 	asteroid_list[i].angle_speed = rand_angle_speed;
 }
@@ -91,10 +98,13 @@ void asteroid_oob(int limit_x, int limit_y) {
 		switch (asteroid_list[i].size)
 		{
 		case 3:
+			offset = 90;
+			break;
+		case 2:
 			offset = 60;
 			break;
 		default:
-			offset = 40;
+			offset = 80;
 			break;
 		}
 		if (asteroid_list[i].position.x + asteroid_list[i].force.x > limit_x + offset) {
