@@ -142,3 +142,44 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
         }
     }
 }
+
+void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings) {
+    int WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float ratio_x = WINDOW_X / 2560;
+
+    sfText* title_text = sfText_create();
+    sfText_setFont(title_text, font);
+    sfText_setString(title_text, "GAME OVER");
+    sfText_setCharacterSize(title_text, 120 * ratio_x);
+    sfText_setPosition(title_text, (sfVector2f) { -sfText_getLocalBounds(title_text).width / 2 + WINDOW_X / 2, 50 * ratio_x });
+
+    sfText* play_text = sfText_create();
+    sfText_setFont(play_text, font);
+    sfText_setString(play_text, "Play");
+    sfText_setCharacterSize(play_text, 80 * ratio_x);
+    sfText_setPosition(play_text, (sfVector2f) { -sfText_getLocalBounds(play_text).width / 2 + 900 * ratio_x, 1250 * ratio_x });
+
+    sfText* return_text = sfText_create();
+    sfText_setFont(return_text, font);
+    sfText_setString(return_text, "Menu");
+    sfText_setCharacterSize(return_text, 80 * ratio_x);
+    sfText_setPosition(return_text, (sfVector2f) { -sfText_getLocalBounds(return_text).width / 2 + WINDOW_X - 900 * ratio_x, 1250 * ratio_x });
+
+    sfRenderWindow_drawText(window, title_text, NULL);
+    sfRenderWindow_drawText(window, play_text, NULL);
+    sfRenderWindow_drawText(window, return_text, NULL);
+
+    input_gameover_menu(window, play_text, return_text, GSettings);
+}
+
+void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, struct GameSettings* Gsettings) {
+    sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
+    sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
+    sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = LAUNCHING;
+    }
+    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = MAIN_MENU;
+    }
+}

@@ -83,18 +83,20 @@ void player_controller(struct Ship* Player1, struct Ship* Player2) {
 }
 
 void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings *GSettings) {
-    ship_movement(Player1);
-    ship_oob(Player1, WINDOW_X, WINDOW_Y);
-    ship_heat_system(Player1);
+    if (Player1->dead == false) {
+        ship_movement(Player1);
+        ship_oob(Player1, WINDOW_X, WINDOW_Y);
+        ship_heat_system(Player1);
 
-    if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings -> versusmode) {
-        ship_death(Player1);
-        if (!GSettings->infinite_respawn && Player1->life <= 0) {
-            GSettings->menu_states = MAIN_MENU;
+        if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings->versusmode) {
+            ship_death(Player1);
+            if (!GSettings->infinite_respawn && Player1->life <= 0) {
+                GSettings->menu_states = GAMEOVER_MENU;
+            }
         }
     }
 
-    if (Player2 != NULL) {
+    if (Player2 != NULL && Player2->dead == false) {
         ship_movement(Player2);
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
@@ -102,7 +104,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings -> versusmode) {
             ship_death(Player2);
             if (!GSettings->infinite_respawn && Player2->life <= 0) {
-                GSettings->menu_states = MAIN_MENU;
+                GSettings->menu_states = GAMEOVER_MENU;
             }
         }
     }
@@ -110,10 +112,14 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
 
 void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Ship *Player2, int *spawntimer, int *maxasteroid, int WINDOW_X, int WINDOW_Y) {
     DestroyAllAsteroids();
+    ship_death(Player1);
+    ship_death(Player2);
     float ratio = WINDOW_X / 2560;
     GSettings -> menu_states = IN_GAME;
     Player1->life = 3;
     Player2->life = 3;
+    Player1->dead = false;
+    Player2->dead = false;
     Player1->position = (sfVector2f){ WINDOW_X / 2 - 200 * ratio, WINDOW_Y / 2 };
     Player2->position = (sfVector2f){ WINDOW_X / 2 + 200 * ratio, WINDOW_Y / 2 };
     switch (GSettings -> difficulty)
@@ -256,6 +262,9 @@ void main() {
         case GAME_MODE_MENU:
             game_mode_menu(window, font1, &GSettings);
             break;
+        case GAMEOVER_MENU:
+            gameover_menu(window, font1, &GSettings);
+            break;
         case IN_GAME:
             draw_game(window, Player, Player2, font1, GSettings, WINDOW_X);
             break;
@@ -271,7 +280,16 @@ void main() {
         /////////////////
 
         ButtonCheck();
-        if (sfKeyboard_isKeyPressed(sfKeyEscape)) { sfRenderWindow_close(window); } //quit
+        if (sfKeyboard_isKeyPressed(sfKeyEscape)) {
+            if (!IsButtonPressed(sfKeyEscape)) {
+                if (GSettings.menu_states == IN_GAME) {
+                    GSettings.menu_states = GAMEOVER_MENU;
+                }
+                else {
+                    GSettings.menu_states = MAIN_MENU;
+                }
+            }
+        }
     }
     DestroyAllAsteroids();
     DestroyAllBullets();
