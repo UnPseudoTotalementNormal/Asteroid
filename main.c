@@ -88,18 +88,20 @@ void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, 
 }
 
 void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSettings GSettings) {
-    if (sfKeyboard_isKeyPressed(sfKeyUp) || (sfKeyboard_isKeyPressed(sfKeyZ) && GSettings.singleplayer)) {
-        ship_move_toward(Player1);
-    }
-    if (sfKeyboard_isKeyPressed(sfKeyRight) || (sfKeyboard_isKeyPressed(sfKeyD) && GSettings.singleplayer)) {
-        Player1 -> angle += Player1 -> angle_speed * delta;
-    }
-    if (sfKeyboard_isKeyPressed(sfKeyLeft) || (sfKeyboard_isKeyPressed(sfKeyQ) && GSettings.singleplayer)) {
-        Player1 -> angle -= Player1 -> angle_speed * delta;
-    }
-    if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1->heat < 100 && Player1->overheat == false) {
-        if (IsButtonPressed(sfKeySpace) == false) {
-            ship_shotgun(Player1);
+    if (Player1 != NULL) {
+        if (sfKeyboard_isKeyPressed(sfKeyUp) || (sfKeyboard_isKeyPressed(sfKeyZ) && GSettings.singleplayer)) {
+            ship_move_toward(Player1);
+        }
+        if (sfKeyboard_isKeyPressed(sfKeyRight) || (sfKeyboard_isKeyPressed(sfKeyD) && GSettings.singleplayer)) {
+            Player1->angle += Player1->angle_speed * delta;
+        }
+        if (sfKeyboard_isKeyPressed(sfKeyLeft) || (sfKeyboard_isKeyPressed(sfKeyQ) && GSettings.singleplayer)) {
+            Player1->angle -= Player1->angle_speed * delta;
+        }
+        if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1->heat < 100 && Player1->overheat == false) {
+            if (IsButtonPressed(sfKeySpace) == false) {
+                ship_shotgun(Player1);
+            }
         }
     }
 
@@ -132,6 +134,24 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         }
     }
 
+    if (Player2 != NULL && (Player2->dead == false || GSettings->infinite_respawn)) {
+        ship_movement(Player2);
+        ship_oob(Player2, WINDOW_X, WINDOW_Y);
+        ship_heat_system(Player2);
+
+        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings->versusmode) {
+            ship_death(Player2);
+        }
+    }
+
+    if (Player2 == NULL) player_controller(Player1, NULL, *GSettings);
+    else {
+        if (!Player1->dead && !Player2->dead) player_controller(Player1, Player2, *GSettings);
+        if (!Player1->dead && Player2->dead) player_controller(Player1, NULL, *GSettings);
+        if (Player1->dead && !Player2->dead) player_controller(NULL, Player2, *GSettings);
+    }
+
+
     switch (GSettings->versusmode)
     {
     case true:
@@ -156,16 +176,6 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
             }
         }
         break;
-    }
-
-    if (Player2 != NULL && (Player2->dead == false || GSettings->infinite_respawn)) {
-        ship_movement(Player2);
-        ship_oob(Player2, WINDOW_X, WINDOW_Y);
-        ship_heat_system(Player2);
-
-        if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings -> versusmode) {
-            ship_death(Player2);
-        }
     }
 }
 
@@ -225,7 +235,7 @@ void main() {
         .singleplayer = true,
         .Nasteroid = 15,
         .versusmode = false,
-        .difficulty = 1,
+        .difficulty = 2,
         .infinite_respawn = false,
     };
 
@@ -294,11 +304,9 @@ void main() {
 
         if (GSettings.menu_states == IN_GAME) {
             if (GSettings.singleplayer) {
-                player_controller(&Player, NULL, GSettings);
                 player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, &GSettings);
             }
             else {
-                player_controller(&Player, &Player2, GSettings);
                 player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, &GSettings);
             }
 
