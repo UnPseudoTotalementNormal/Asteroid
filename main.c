@@ -132,13 +132,30 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         }
     }
 
-    if (Player1->life <= 0) {
-        if (GSettings->singleplayer) {
-            GSettings->menu_states = GAMEOVER_MENU;
+    switch (GSettings->versusmode)
+    {
+    case true:
+        if (Player2 != NULL) {
+            if (Player1->life <= 0) {
+                GSettings->versuswinner = 2;
+                GSettings->menu_states = GAMEOVER_MENU;
+            }
+            if (Player2->life <= 0) {
+                GSettings->versuswinner = 1;
+                GSettings->menu_states = GAMEOVER_MENU;
+            }
         }
-        else if (Player2->dead) {
-            GSettings->menu_states = GAMEOVER_MENU;
+        break;
+    case false:
+        if (Player1->life <= 0 && !GSettings->versusmode) {
+            if (GSettings->singleplayer) {
+                GSettings->menu_states = GAMEOVER_MENU;
+            }
+            else if (Player2->dead) {
+                GSettings->menu_states = GAMEOVER_MENU;
+            }
         }
+        break;
     }
 
     if (Player2 != NULL && Player2->dead == false) {

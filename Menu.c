@@ -18,6 +18,8 @@ void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsetti
     float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560.0;
 
+    sfRectangleShape* highlight = sfRectangleShape_create();
+
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
     sfText_setString(title_text, "Shotgunnin' Space");
@@ -42,12 +44,12 @@ void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsetti
     sfText_setCharacterSize(quit_text, 80 * ratio_x);
     sfText_setPosition(quit_text, (sfVector2f) { -sfText_getLocalBounds(quit_text).width / 2 + WINDOW_X / 2, 1150 * ratio_x });
 
+    input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings, &highlight);
+
     sfRenderWindow_drawText(window, singleplayer_text, NULL);
     sfRenderWindow_drawText(window, multiplayer_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
-
-    input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings);
 }
 
 void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings) {
@@ -150,7 +152,18 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
-    sfText_setString(title_text, "GAME OVER");
+    if (!GSettings->versusmode) sfText_setString(title_text, "GAME OVER");
+    else {
+        switch (GSettings->versuswinner)
+        {
+        case 1:
+            sfText_setString(title_text, "PLAYER 1 WIN");
+            break;
+        case 2:
+            sfText_setString(title_text, "PLAYER 2 WIN");
+            break;
+        }
+    }
     sfText_setCharacterSize(title_text, 120 * ratio_x);
     sfText_setPosition(title_text, (sfVector2f) { -sfText_getLocalBounds(title_text).width / 2 + WINDOW_X / 2, 50 * ratio_x });
 
@@ -199,15 +212,22 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
         sfText* timer2_text = sfText_create();
         sfText_setFont(timer2_text, font);
         char timer2_char[40];
-        snprintf(timer2_char, 40, "Player 2 timer: %d Sec", ship2.alive_time);
+        if (!GSettings->versusmode) snprintf(timer2_char, 40, "Player 2 timer: %d Sec", ship2.alive_time);
+        else {
+            if (GSettings->versuswinner == 1) snprintf(timer2_char, 40, "Timer: %d", ship2.alive_time);
+            else snprintf(timer2_char, 40, "Timer: %d", ship.alive_time);
+        }
         sfText_setString(timer2_text, timer2_char);
         sfText_setCharacterSize(timer2_text, 70 * ratio_x);
 
         snprintf(score1_char, 40, "Player 1 score: %d", ship.score);
         snprintf(timer1_char, 40, "Player 1 timer: %d Sec", ship.alive_time);
+        sfText_setString(score1_text, score1_char);
+        sfText_setString(timer1_text, timer1_char);
 
-        sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2 - 600, 800 * ratio_x });
-        sfText_setPosition(timer2_text, (sfVector2f) { -sfText_getLocalBounds(score2_text).width / 2 + WINDOW_X / 2 + 600, 800 * ratio_x });
+        sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(timer1_text).width / 2 + WINDOW_X / 2 - 600, 800 * ratio_x });
+        if (!GSettings->versusmode ) sfText_setPosition(timer2_text, (sfVector2f) { -sfText_getLocalBounds(timer2_text).width / 2 + WINDOW_X / 2 + 600, 800 * ratio_x });
+        else sfText_setPosition(timer2_text, (sfVector2f) { -sfText_getLocalBounds(timer2_text).width / 2 + WINDOW_X / 2, 800 * ratio_x });
 
         sfText_setPosition(score1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2 - 600 * ratio_x, 600 * ratio_x });
         sfText_setPosition(score2_text, (sfVector2f) { -sfText_getLocalBounds(score2_text).width / 2 + WINDOW_X / 2 + 600 * ratio_x, 600 * ratio_x });
@@ -221,7 +241,7 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
     sfRenderWindow_drawText(window, return_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, score1_text, NULL);
-    sfRenderWindow_drawText(window, timer1_text, NULL);
+    if (!GSettings->versusmode) sfRenderWindow_drawText(window, timer1_text, NULL);
 
     input_gameover_menu(window, play_text, return_text, quit_text, GSettings);
 }

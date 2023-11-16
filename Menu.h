@@ -9,6 +9,7 @@ struct GameSettings {
 	int Nasteroid;
 	bool singleplayer;
 	bool versusmode;
+	int versuswinner;
 	int difficulty;
 	bool infinite_respawn;
 };
@@ -25,7 +26,7 @@ enum MENU_STATES
 
 void main_menu(window, font, Gsettings);
 
-void input_main_menu(window, singlebutton, multibutton, quitbutton, Gsettings);
+void input_main_menu(window, singlebutton, multibutton, quitbutton, Gsettings, highlight);
 
 void game_mode_menu(window, font, Gsettings);
 

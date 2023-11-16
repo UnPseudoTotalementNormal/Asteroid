@@ -123,9 +123,9 @@ void ship_death(struct Ship ship) {
 	ship.overheat = false;
 	ship.life -= 1;
 	ship.angle = -90;
+	sfTime time = sfClock_getElapsedTime(ship.alive_clock);
+	ship.alive_time = sfTime_asSeconds(time);
 	if (ship.life <= 0 && ship.dead != true) {
 		ship.dead = true;
-		sfTime time = sfClock_getElapsedTime(ship.alive_clock);
-		ship.alive_time = sfTime_asSeconds(time);
 	}
 }
