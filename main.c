@@ -89,13 +89,13 @@ void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, 
 
 void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSettings GSettings) {
     if (Player1 != NULL) {
-        if (sfKeyboard_isKeyPressed(sfKeyUp) || (sfKeyboard_isKeyPressed(sfKeyZ) && GSettings.singleplayer)) {
+        if ((sfKeyboard_isKeyPressed(sfKeyUp) || (sfKeyboard_isKeyPressed(sfKeyZ) && GSettings.singleplayer)) && !GSettings.no_movement) {
             ship_move_toward(Player1);
         }
-        if (sfKeyboard_isKeyPressed(sfKeyRight) || (sfKeyboard_isKeyPressed(sfKeyD) && GSettings.singleplayer)) {
+        if ((sfKeyboard_isKeyPressed(sfKeyRight) || (sfKeyboard_isKeyPressed(sfKeyD) && GSettings.singleplayer)) || GSettings.autoturn) {
             Player1->angle += Player1->angle_speed * delta;
         }
-        if (sfKeyboard_isKeyPressed(sfKeyLeft) || (sfKeyboard_isKeyPressed(sfKeyQ) && GSettings.singleplayer)) {
+        if ((sfKeyboard_isKeyPressed(sfKeyLeft) || (sfKeyboard_isKeyPressed(sfKeyQ) && GSettings.singleplayer)) && !GSettings.autoturn) {
             Player1->angle -= Player1->angle_speed * delta;
         }
         if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1->heat < 100 && Player1->overheat == false) {
@@ -106,13 +106,13 @@ void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSe
     }
 
     if (Player2 != NULL) {
-        if (sfKeyboard_isKeyPressed(sfKeyZ)) {
+        if (sfKeyboard_isKeyPressed(sfKeyZ) && !GSettings.no_movement) {
             ship_move_toward(Player2);
         }
-        if (sfKeyboard_isKeyPressed(sfKeyD)) {
+        if (sfKeyboard_isKeyPressed(sfKeyD) || GSettings.autoturn) {
             Player2->angle += Player2->angle_speed * delta;
         }
-        if (sfKeyboard_isKeyPressed(sfKeyQ)) {
+        if (sfKeyboard_isKeyPressed(sfKeyQ) && !GSettings.autoturn) {
             Player2->angle -= Player2->angle_speed * delta;
         }
         if (sfKeyboard_isKeyPressed(sfKeyLShift) && Player2->heat < 100 && Player2->overheat == false) {
