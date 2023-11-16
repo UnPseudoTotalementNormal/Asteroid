@@ -124,7 +124,12 @@ void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSe
 }
 
 void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings *GSettings) {
-    if (Player1->dead == false || GSettings->infinite_respawn) {
+    if (GSettings->infinite_respawn) {
+        Player1->dead = false;
+        if (Player2 != NULL) Player2->dead = false;
+    }
+
+    if (Player1->dead == false) {
         ship_movement(Player1);
         ship_oob(Player1, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player1);
@@ -134,7 +139,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         }
     }
 
-    if (Player2 != NULL && (Player2->dead == false || GSettings->infinite_respawn)) {
+    if (Player2 != NULL && Player2->dead == false) {
         ship_movement(Player2);
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
@@ -243,6 +248,8 @@ void main() {
         .versusmode = false,
         .difficulty = 2,
         .infinite_respawn = false,
+        .autoturn = false,
+        .no_movement = false,
     };
 
     struct Ship Player = {

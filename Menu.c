@@ -115,6 +115,24 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setCharacterSize(return_text, 80 * ratio_x);
     sfText_setPosition(return_text, (sfVector2f) { -sfText_getLocalBounds(return_text).width / 2 + WINDOW_X - 900 * ratio_x, 1250 * ratio_x });
 
+    sfText* infinite_respawn_text = sfText_copy(title_text);
+    sfText_setString(infinite_respawn_text, "Infinite Respawn");
+    sfText_setCharacterSize(infinite_respawn_text, 50 * ratio_x);
+    sfText_setPosition(infinite_respawn_text, (sfVector2f) { -sfText_getLocalBounds(infinite_respawn_text).width / 2 + WINDOW_X / 2 * ratio_x, 900 * ratio_x });
+    if (Gsettings->infinite_respawn) sfText_setFillColor(infinite_respawn_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
+
+    sfText* autoturn_text = sfText_copy(title_text);
+    sfText_setString(autoturn_text, "Auto turn");
+    sfText_setCharacterSize(autoturn_text, 50 * ratio_x);
+    sfText_setPosition(autoturn_text, (sfVector2f) { -sfText_getLocalBounds(autoturn_text).width / 2 + WINDOW_X / 2 * ratio_x, 800 * ratio_x });
+    if (Gsettings->autoturn) sfText_setFillColor(autoturn_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
+
+    sfText* versus_text = sfText_copy(title_text);
+    sfText_setString(versus_text, "Multiplayer only: Versus mode");
+    sfText_setCharacterSize(versus_text, 50 * ratio_x);
+    sfText_setPosition(versus_text, (sfVector2f) { -sfText_getLocalBounds(versus_text).width / 2 + WINDOW_X / 2 * ratio_x, 400 * ratio_x });
+    if (Gsettings->versusmode) sfText_setFillColor(versus_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
+
     sfText* difficulty_text = sfText_create();
     sfText_setFont(difficulty_text, font);
     switch (Gsettings->difficulty)
@@ -135,7 +153,9 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setCharacterSize(difficulty_text, 80 * ratio_x);
     sfText_setPosition(difficulty_text, (sfVector2f) { -sfText_getLocalBounds(difficulty_text).width / 2 + WINDOW_X / 2, 1100 * ratio_x });
 
-    input_game_mode_menu(window, play_text, return_text, difficulty_text, Gsettings, highlight);
+    input_game_mode_menu(window, play_text, return_text, difficulty_text,
+        infinite_respawn_text, autoturn_text, versus_text,
+        Gsettings, highlight);
 
     sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
@@ -143,12 +163,23 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, return_text, NULL);
     sfRenderWindow_drawText(window, difficulty_text, NULL);
+
+    sfRenderWindow_drawText(window, infinite_respawn_text, NULL);
+    sfRenderWindow_drawText(window, autoturn_text, NULL);
+    if (!Gsettings->singleplayer) sfRenderWindow_drawText(window, versus_text, NULL);
 }
 
-void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* difficultybutton, struct GameSettings* Gsettings, sfRectangleShape* highlight) {
+void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* difficultybutton,
+    sfText* infiniteresbutton, sfText* autoturnbutton, sfText* versusbutton,
+    struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
     sfFloatRect difficultyrect = sfText_getGlobalBounds(difficultybutton);
+    
+    sfFloatRect infiniteresrect = sfText_getGlobalBounds(infiniteresbutton);
+    sfFloatRect autoturnrect = sfText_getGlobalBounds(autoturnbutton);
+    sfFloatRect versusrect = sfText_getGlobalBounds(versusbutton);
+
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
     if (sfFloatRect_intersects(&playrect, &mouserect, NULL)) {
         sfRectangleShape_setSize(highlight, (sfVector2f) { playrect.width + 15, playrect.height + 30 });
@@ -174,6 +205,11 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
             }
         }
     }
+
+    button_switch(infiniteresrect, mouserect, infiniteresbutton, highlight, &Gsettings->infinite_respawn);
+    button_switch(autoturnrect, mouserect, autoturnbutton, highlight, &Gsettings->autoturn);
+    if (!Gsettings->singleplayer) button_switch(versusrect, mouserect, versusbutton, highlight, &Gsettings->versusmode);
+
 }
 
 void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings, struct Ship ship, struct Ship ship2) {
@@ -362,6 +398,18 @@ void input_pause_menu(sfRenderWindow* window, sfText* playbutton, sfText* menubu
         sfRectangleShape_setPosition(highlight, sfText_getPosition(menubutton));
         if (sfMouse_isButtonPressed(sfMouseLeft)) {
             Gsettings->menu_states = MAIN_MENU;
+        }
+    }
+}
+
+void button_switch(sfFloatRect buttonrect, sfFloatRect mouserect, sfText* button, sfRectangleShape* highlight, bool* setting_switch) {
+    if (sfFloatRect_intersects(&buttonrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { buttonrect.width + 15, buttonrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(button));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            if (!IsButtonPressed(sfMouseLeft)) {
+                *setting_switch = !*setting_switch;
+            }
         }
     }
 }
