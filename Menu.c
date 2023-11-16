@@ -7,6 +7,7 @@
 #include "Deltatime.h"
 #include "Vector2_tools.h"
 #include "ButtonPress.h"
+#include "Player.h"
 #include "Menu.h"
 
 typedef int bool;
@@ -143,7 +144,7 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
     }
 }
 
-void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings) {
+void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings, struct Ship ship, struct Ship ship2) {
     float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
 
@@ -171,10 +172,54 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
     sfText_setCharacterSize(quit_text, 80 * ratio_x);
     sfText_setPosition(quit_text, (sfVector2f) { -sfText_getLocalBounds(quit_text).width / 2 + WINDOW_X /2, 1250 * ratio_x });
 
+    sfText* score1_text = sfText_create();
+    sfText_setFont(score1_text, font);
+    char score1_char[40];
+    snprintf(score1_char, 40, "Player 1 score: %d", ship.score);
+    sfText_setString(score1_text, score1_char);
+    sfText_setCharacterSize(score1_text, 70 * ratio_x);
+    sfText_setPosition(score1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2, 600 * ratio_x });
+
+    sfText* timer1_text = sfText_create();
+    sfText_setFont(timer1_text, font);
+    char timer1_char[40];
+    snprintf(timer1_char, 40, "Player 1 timer: %d Sec", ship.alive_time);
+    sfText_setString(timer1_text, timer1_char);
+    sfText_setCharacterSize(timer1_text, 70 * ratio_x);
+    sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2, 800 * ratio_x });
+
+    if (!GSettings->singleplayer) {
+        sfText* score2_text = sfText_create();
+        sfText_setFont(score2_text, font);
+        char score2_char[40];
+        snprintf(score2_char, 40, "Player 2 score: %d", ship2.score);
+        sfText_setString(score2_text, score2_char);
+        sfText_setCharacterSize(score2_text, 70 * ratio_x);
+
+        sfText* timer2_text = sfText_create();
+        sfText_setFont(timer2_text, font);
+        char timer2_char[40];
+        snprintf(timer2_char, 40, "Player 2 timer: %d Sec", ship2.alive_time);
+        sfText_setString(timer2_text, timer2_char);
+        sfText_setCharacterSize(timer2_text, 70 * ratio_x);
+
+
+        sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2 - 600, 800 * ratio_x });
+        sfText_setPosition(timer2_text, (sfVector2f) { -sfText_getLocalBounds(score2_text).width / 2 + WINDOW_X / 2 + 600, 800 * ratio_x });
+
+        sfText_setPosition(score1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2 - 600 * ratio_x, 600 * ratio_x });
+        sfText_setPosition(score2_text, (sfVector2f) { -sfText_getLocalBounds(score2_text).width / 2 + WINDOW_X / 2 + 600 * ratio_x, 600 * ratio_x });
+
+        sfRenderWindow_drawText(window, score2_text, NULL);
+        sfRenderWindow_drawText(window, timer2_text, NULL);
+    }
+
     sfRenderWindow_drawText(window, title_text, NULL);
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, return_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
+    sfRenderWindow_drawText(window, score1_text, NULL);
+    sfRenderWindow_drawText(window, timer1_text, NULL);
 
     input_gameover_menu(window, play_text, return_text, quit_text, GSettings);
 }
@@ -192,5 +237,51 @@ void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* ret
     }
     if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
         sfRenderWindow_close(window);
+    }
+}
+
+void pause_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
+    float WINDOW_X = sfVideoMode_getDesktopMode().width;
+    float ratio_x = WINDOW_X / 2560.0;
+
+    sfText* title_text = sfText_create();
+    sfText_setFont(title_text, font);
+    sfText_setString(title_text, "PAUSE");
+    sfText_setCharacterSize(title_text, 120 * ratio_x);
+    sfText_setPosition(title_text, (sfVector2f) { -sfText_getLocalBounds(title_text).width / 2 + WINDOW_X / 2, 50 * ratio_x });
+
+    sfText* play_text = sfText_create();
+    sfText_setFont(play_text, font);
+    sfText_setString(play_text, "Continue");
+    sfText_setCharacterSize(play_text, 80 * ratio_x);
+    sfText_setPosition(play_text, (sfVector2f) { -sfText_getLocalBounds(play_text).width / 2 + WINDOW_X / 2 - 300 * ratio_x, 1150 * ratio_x });
+
+    sfText* menu_text = sfText_create();
+    sfText_setFont(menu_text, font);
+    sfText_setString(menu_text, "Menu");
+    sfText_setCharacterSize(menu_text, 80 * ratio_x);
+    sfText_setPosition(menu_text, (sfVector2f) { -sfText_getLocalBounds(menu_text).width / 2 + WINDOW_X / 2 + 300 * ratio_x, 1150 * ratio_x });
+
+    sfRectangleShape* cover = sfRectangleShape_create();
+    sfRectangleShape_setSize(cover, (sfVector2f) { sfVideoMode_getDesktopMode().width, sfVideoMode_getDesktopMode().height});
+    sfRectangleShape_setFillColor(cover, sfColor_fromRGBA((sfUint8)0, (sfUint8)0, (sfUint8)0, (sfUint8)200));
+
+    sfRenderWindow_drawRectangleShape(window, cover, NULL);
+    sfRenderWindow_drawText(window, play_text, NULL);
+    sfRenderWindow_drawText(window, menu_text, NULL);
+    sfRenderWindow_drawText(window, title_text, NULL);
+
+    input_pause_menu(window, play_text, menu_text, Gsettings);
+}
+
+void input_pause_menu(sfRenderWindow* window, sfText* playbutton, sfText* menubutton, struct GameSettings* Gsettings) {
+    sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
+    sfFloatRect menurect = sfText_getGlobalBounds(menubutton);
+    sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = IN_GAME;
+    }
+    if (sfFloatRect_intersects(&menurect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
+        Gsettings->menu_states = MAIN_MENU;
     }
 }

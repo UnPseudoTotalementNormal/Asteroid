@@ -74,8 +74,10 @@ void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont
 }
 
 void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, float WINDOW_X) {
-    sfRenderWindow_drawText(window, Player.text, NULL);
-    if (GSettings.singleplayer == false) {
+    if (!Player.dead) {
+        sfRenderWindow_drawText(window, Player.text, NULL);
+    }
+    if (GSettings.singleplayer == false && !Player2.dead) {
         sfRenderWindow_drawText(window, Player2.text, NULL);
     }
 
@@ -127,9 +129,15 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
 
         if (asteroid_collision(Player1->position, sfText_getCharacterSize(Player1->text), false) || (bullet_to_ship_collision(Player1)) && GSettings->versusmode) {
             ship_death(Player1);
-            if (!GSettings->infinite_respawn && Player1->life <= 0) {
-                GSettings->menu_states = GAMEOVER_MENU;
-            }
+        }
+    }
+
+    if (Player1->life <= 0) {
+        if (GSettings->singleplayer) {
+            GSettings->menu_states = GAMEOVER_MENU;
+        }
+        else if (Player2->dead) {
+            GSettings->menu_states = GAMEOVER_MENU;
         }
     }
 
@@ -140,9 +148,6 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
 
         if (asteroid_collision(Player2->position, sfText_getCharacterSize(Player2->text), false) || (bullet_to_ship_collision(Player2)) && GSettings -> versusmode) {
             ship_death(Player2);
-            if (!GSettings->infinite_respawn && Player2->life <= 0) {
-                GSettings->menu_states = GAMEOVER_MENU;
-            }
         }
     }
 }
@@ -270,28 +275,30 @@ void main() {
         }
         DeltaTime();
 
-        if (GSettings.singleplayer) {
-            player_controller(&Player, NULL);
-            player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, &GSettings);
-        }
-        else {
-            player_controller(&Player, &Player2);
-            player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, &GSettings);
-        }
-        
+        if (GSettings.menu_states == IN_GAME) {
+            if (GSettings.singleplayer) {
+                player_controller(&Player, NULL);
+                player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, &GSettings);
+            }
+            else {
+                player_controller(&Player, &Player2);
+                player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, &GSettings);
+            }
 
-        bullet_oob(WINDOW_X, WINDOW_Y);
-        move_bullets();
-        check_bullets_lifetime();
 
-        asteroid_to_asteroid_collision();
-        move_asteroids();
-        asteroid_oob(WINDOW_X, WINDOW_Y);
+            bullet_oob(WINDOW_X, WINDOW_Y);
+            move_bullets();
+            check_bullets_lifetime();
 
-        sfTime Asterotime = sfClock_getElapsedTime(AsteroidSpawnerClock);
-        if (sfTime_asMilliseconds(Asterotime) > AsteroidTimeSpawn && GetAsteroidCount() < MaxAsteroid && GSettings.menu_states == IN_GAME) {
-            sfClock_restart(AsteroidSpawnerClock);
-            create_asteroid(0, 0, GSettings.difficulty);
+            asteroid_to_asteroid_collision();
+            move_asteroids();
+            asteroid_oob(WINDOW_X, WINDOW_Y);
+
+            sfTime Asterotime = sfClock_getElapsedTime(AsteroidSpawnerClock);
+            if (sfTime_asMilliseconds(Asterotime) > AsteroidTimeSpawn && GetAsteroidCount() < MaxAsteroid && GSettings.menu_states == IN_GAME) {
+                sfClock_restart(AsteroidSpawnerClock);
+                create_asteroid(0, 0, GSettings.difficulty);
+            }
         }
 
         ////// DRAW /////
@@ -306,13 +313,17 @@ void main() {
             game_mode_menu(window, font1, &GSettings);
             break;
         case GAMEOVER_MENU:
-            gameover_menu(window, font1, &GSettings);
+            gameover_menu(window, font1, &GSettings, Player, Player2);
             break;
         case IN_GAME:
             draw_game(window, Player, Player2, font1, GSettings, WINDOW_X);
             break;
         case LAUNCHING:
             launch_game(&GSettings, &Player, &Player2, &AsteroidTimeSpawn, &MaxAsteroid, WINDOW_X, WINDOW_Y);
+            break;
+        case PAUSE:
+            draw_game(window, Player, Player2, font1, GSettings, WINDOW_X);
+            pause_menu(window, font1, &GSettings);
             break;
         default:
             GSettings.menu_states = MAIN_MENU;
@@ -324,11 +335,17 @@ void main() {
 
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) {
             if (!IsButtonPressed(sfKeyEscape)) {
-                if (GSettings.menu_states == IN_GAME) {
-                    GSettings.menu_states = GAMEOVER_MENU;
-                }
-                else {
+                switch (GSettings.menu_states)
+                {
+                case IN_GAME:
+                    GSettings.menu_states = PAUSE;
+                    break;
+                case PAUSE:
+                    GSettings.menu_states = IN_GAME;
+                    break;
+                default:
                     GSettings.menu_states = MAIN_MENU;
+                    break;
                 }
             }
         }

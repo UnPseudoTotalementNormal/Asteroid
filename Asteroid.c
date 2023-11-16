@@ -66,7 +66,7 @@ void create_asteroid(int x, int y, int size) {
 void set_asteroid_random_force(int i) {
 	float WINDOW_X = sfVideoMode_getDesktopMode().width;
 	float ratio = WINDOW_X / 2560;
-	float rand_angle = (rand() % 36000) / 100.0;
+	float rand_angle = rand();
 	if ((int)rand_angle % 90 < 20) {
 		set_asteroid_random_force(i);
 		return;

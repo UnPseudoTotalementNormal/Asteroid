@@ -20,6 +20,7 @@ enum MENU_STATES
 	GAMEOVER_MENU,
 	IN_GAME,
 	LAUNCHING,
+	PAUSE,
 };
 
 void main_menu(window, font, Gsettings);
@@ -30,6 +31,10 @@ void game_mode_menu(window, font, Gsettings);
 
 void input_game_mode_menu(window, playbutton, returnbutton, Gsettings);
 
-void gameover_menu(window, font, GSettings);
+void gameover_menu(window, font, GSettings, ship, ship2);
 
 void input_gameover_menu(window, playbutton, returnbutton, Gsettings);
+
+void pause_menu(window, font, GSettings);
+
+void input_pause_menu(window, playbutton, menubutton, Gsettings);
