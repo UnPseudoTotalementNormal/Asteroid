@@ -191,8 +191,14 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
     Player2->life = 3;
     Player1->dead = false;
     Player2->dead = false;
-    Player1->position = (sfVector2f){ (float)WINDOW_X / 2.0 - 200 * ratio, WINDOW_Y / 2 };
-    Player2->position = (sfVector2f){ (float)WINDOW_X / 2.0 + 200 * ratio, WINDOW_Y / 2 };
+    if (!GSettings->singleplayer) {
+        Player1->position = (sfVector2f){ (float)WINDOW_X / 2.0 - 200 * ratio, WINDOW_Y / 2 };
+        Player2->position = (sfVector2f){ (float)WINDOW_X / 2.0 + 200 * ratio, WINDOW_Y / 2 };
+    }
+    else {
+        Player1->position = (sfVector2f){ (float)WINDOW_X / 2.0, WINDOW_Y / 2 };
+    }
+    
     sfClock_restart(Player1->alive_clock);
     sfClock_restart(Player2->alive_clock);
     switch (GSettings -> difficulty)
