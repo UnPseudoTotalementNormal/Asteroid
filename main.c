@@ -32,23 +32,45 @@ void HUD(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont
     sfText_setPosition(life2_text, (sfVector2f){WINDOW_X - sfText_getLocalBounds(life2_text).width, 0});
 
     sfText* score1_text = sfText_copy(life1_text);
-    char score1_char[12];
-    snprintf(score1_char, 12, "Score: %d", Player.score);
+    char score1_char[15];
+    snprintf(score1_char, 15, "Score: %d", Player.score);
     sfText_setString(score1_text, score1_char);
-    sfText_setPosition(score1_text, (sfVector2f) { 0, sfText_getLocalBounds(life1_text).height * 1.5 });
+    sfText_setPosition(score1_text, (sfVector2f) { 0, sfText_getLocalBounds(life1_text).height + sfText_getGlobalBounds(life2_text).top });
 
     sfText* score2_text = sfText_copy(life1_text);
-    char score2_char[12];
-    snprintf(score2_char, 12, "Score: %d", Player.score);
+    char score2_char[15];
+    snprintf(score2_char, 15, "Score: %d", Player2.score);
     sfText_setString(score2_text, score2_char);
-    sfText_setPosition(score2_text, (sfVector2f) { WINDOW_X - sfText_getLocalBounds(score2_text).width, sfText_getLocalBounds(life2_text).height * 1.5 });
+    sfText_setPosition(score2_text, (sfVector2f) { WINDOW_X - sfText_getLocalBounds(score2_text).width, sfText_getLocalBounds(life2_text).height + sfText_getGlobalBounds(life2_text).top });
+
+    sfText* timer1_text = sfText_copy(life1_text);
+    char timer1_char[20];
+    if (!Player.dead) {
+        sfTime time1 = sfClock_getElapsedTime(Player.alive_clock);
+        Player.alive_time = (int)sfTime_asSeconds(time1);
+    }
+    snprintf(timer1_char, 20, "Timer: %d", Player.alive_time);
+    sfText_setString(timer1_text, timer1_char);
+    sfText_setPosition(timer1_text, (sfVector2f) { 0, sfText_getGlobalBounds(score1_text).height + sfText_getGlobalBounds(score1_text).top });
+
+    sfText* timer2_text = sfText_copy(life1_text);
+    char timer2_char[20];
+    if (!Player2.dead) {
+        sfTime time2 = sfClock_getElapsedTime(Player2.alive_clock);
+        Player2.alive_time = (int)sfTime_asSeconds(time2);
+    }
+    snprintf(timer2_char, 20, "Timer: %d", Player2.alive_time);
+    sfText_setString(timer2_text, timer2_char);
+    sfText_setPosition(timer2_text, (sfVector2f) { WINDOW_X - sfText_getLocalBounds(timer2_text).width, sfText_getGlobalBounds(score2_text).height + sfText_getGlobalBounds(score2_text).top });
 
     sfRenderWindow_drawText(window, life1_text, NULL);
+    sfRenderWindow_drawText(window, score1_text, NULL);
+    sfRenderWindow_drawText(window, timer1_text, NULL);
     if (GSettings.singleplayer == false) {
         sfRenderWindow_drawText(window, life2_text, NULL);
         sfRenderWindow_drawText(window, score2_text, NULL);
+        sfRenderWindow_drawText(window, timer2_text, NULL);
     }
-    sfRenderWindow_drawText(window, score1_text, NULL);
 }
 
 void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, sfFont* font1, struct GameSettings GSettings, float WINDOW_X) {
@@ -139,6 +161,8 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
     Player2->dead = false;
     Player1->position = (sfVector2f){ (float)WINDOW_X / 2.0 - 200 * ratio, WINDOW_Y / 2 };
     Player2->position = (sfVector2f){ (float)WINDOW_X / 2.0 + 200 * ratio, WINDOW_Y / 2 };
+    sfClock_restart(Player1->alive_clock);
+    sfClock_restart(Player2->alive_clock);
     switch (GSettings -> difficulty)
     {
     case 1: //easy
@@ -198,6 +222,7 @@ void main() {
         .unheat_time = 1000,
         .overheat_time = 2500,
         .life = 3,
+        .alive_clock = sfClock_create(),
         .heat_clock = sfClock_create(),
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
@@ -218,6 +243,7 @@ void main() {
         .unheat_time = 1000,
         .overheat_time = 2500,
         .life = 3,
+        .alive_clock = sfClock_create(),
         .heat_clock = sfClock_create(),
         .font = sfFont_createFromFile("Font/Ubuntu.ttf"),
         .text = sfText_create(),
@@ -315,6 +341,8 @@ void main() {
     sfText_destroy(Player2.text);
     sfClock_destroy(Player.heat_clock);
     sfClock_destroy(Player2.heat_clock);
+    sfClock_destroy(Player.alive_clock);
+    sfClock_destroy(Player2.alive_clock);
     sfFont_destroy(Player.font);
     sfFont_destroy(Player2.font);
     sfClock_destroy(AsteroidSpawnerClock);
