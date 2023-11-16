@@ -175,7 +175,7 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
     sfText* score1_text = sfText_create();
     sfText_setFont(score1_text, font);
     char score1_char[40];
-    snprintf(score1_char, 40, "Player 1 score: %d", ship.score);
+    snprintf(score1_char, 40, "Score: %d", ship.score);
     sfText_setString(score1_text, score1_char);
     sfText_setCharacterSize(score1_text, 70 * ratio_x);
     sfText_setPosition(score1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2, 600 * ratio_x });
@@ -183,7 +183,7 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
     sfText* timer1_text = sfText_create();
     sfText_setFont(timer1_text, font);
     char timer1_char[40];
-    snprintf(timer1_char, 40, "Player 1 timer: %d Sec", ship.alive_time);
+    snprintf(timer1_char, 40, "Timer: %d Sec", ship.alive_time);
     sfText_setString(timer1_text, timer1_char);
     sfText_setCharacterSize(timer1_text, 70 * ratio_x);
     sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2, 800 * ratio_x });
@@ -203,6 +203,8 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
         sfText_setString(timer2_text, timer2_char);
         sfText_setCharacterSize(timer2_text, 70 * ratio_x);
 
+        snprintf(score1_char, 40, "Player 1 score: %d", ship.score);
+        snprintf(timer1_char, 40, "Player 1 timer: %d Sec", ship.alive_time);
 
         sfText_setPosition(timer1_text, (sfVector2f) { -sfText_getLocalBounds(score1_text).width / 2 + WINDOW_X / 2 - 600, 800 * ratio_x });
         sfText_setPosition(timer2_text, (sfVector2f) { -sfText_getLocalBounds(score2_text).width / 2 + WINDOW_X / 2 + 600, 800 * ratio_x });
