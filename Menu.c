@@ -19,6 +19,7 @@ void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsetti
     float ratio_x = WINDOW_X / 2560.0;
 
     sfRectangleShape* highlight = sfRectangleShape_create();
+    sfRectangleShape_setFillColor(highlight, sfColor_fromRGBA((sfUint8) 255, (sfUint8) 255, (sfUint8) 255, (sfUint8) 45));
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -44,35 +45,51 @@ void main_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsetti
     sfText_setCharacterSize(quit_text, 80 * ratio_x);
     sfText_setPosition(quit_text, (sfVector2f) { -sfText_getLocalBounds(quit_text).width / 2 + WINDOW_X / 2, 1150 * ratio_x });
 
-    input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings, &highlight);
+    input_main_menu(window, singleplayer_text, multiplayer_text, quit_text, Gsettings, highlight);
 
+    sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, singleplayer_text, NULL);
     sfRenderWindow_drawText(window, multiplayer_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
 }
 
-void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings) {
+void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multibutton, sfText* quitbutton, struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect singlerect = sfText_getGlobalBounds(singlebutton);
     sfFloatRect multirect = sfText_getGlobalBounds(multibutton);
     sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
-    if (sfFloatRect_intersects(&singlerect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = GAME_MODE_MENU;
-        Gsettings->singleplayer = true;
+    if (sfFloatRect_intersects(&singlerect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) {singlerect.width + 15, singlerect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(singlebutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = GAME_MODE_MENU;
+            Gsettings->singleplayer = true;
+        }
     }
-    if (sfFloatRect_intersects(&multirect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = GAME_MODE_MENU;
-        Gsettings->singleplayer = false;
+    if (sfFloatRect_intersects(&multirect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { multirect.width + 15, multirect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(multibutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = GAME_MODE_MENU;
+            Gsettings->singleplayer = false;
+        }
     }
-    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        sfRenderWindow_close(window);
+    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { quitrect.width + 15, quitrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(quitbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            sfRenderWindow_close(window);
+        }
     }
 }
 
 void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
     float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560.0;
+
+    sfRectangleShape* highlight = sfRectangleShape_create();
+    sfRectangleShape_setFillColor(highlight, sfColor_fromRGBA((sfUint8)255, (sfUint8)255, (sfUint8)255, (sfUint8)45));
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -118,30 +135,43 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setCharacterSize(difficulty_text, 80 * ratio_x);
     sfText_setPosition(difficulty_text, (sfVector2f) { -sfText_getLocalBounds(difficulty_text).width / 2 + WINDOW_X / 2, 1100 * ratio_x });
 
+    input_game_mode_menu(window, play_text, return_text, difficulty_text, Gsettings, highlight);
+
+    sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
     sfRenderWindow_drawText(window, subtitle_text, NULL);
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, return_text, NULL);
     sfRenderWindow_drawText(window, difficulty_text, NULL);
-
-    input_game_mode_menu(window, play_text, return_text, difficulty_text, Gsettings);
 }
 
-void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* difficultybutton, struct GameSettings* Gsettings) {
+void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* difficultybutton, struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
     sfFloatRect difficultyrect = sfText_getGlobalBounds(difficultybutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
-    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = LAUNCHING;
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { playrect.width + 15, playrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(playbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = LAUNCHING;
+        }
     }
-    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = MAIN_MENU;
+    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { returnrect.width + 15, returnrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(returnbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = MAIN_MENU;
+        }
     }
-    if (sfFloatRect_intersects(&difficultyrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        if (!IsButtonPressed(sfMouseLeft)) {
-            Gsettings->difficulty += 1;
-            if (Gsettings->difficulty > 3) Gsettings->difficulty = 1;
+    if (sfFloatRect_intersects(&difficultyrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { difficultyrect.width + 15, difficultyrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(difficultybutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            if (!IsButtonPressed(sfMouseLeft)) {
+                Gsettings->difficulty += 1;
+                if (Gsettings->difficulty > 3) Gsettings->difficulty = 1;
+            }
         }
     }
 }
@@ -149,6 +179,9 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
 void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GSettings, struct Ship ship, struct Ship ship2) {
     float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560;
+
+    sfRectangleShape* highlight = sfRectangleShape_create();
+    sfRectangleShape_setFillColor(highlight, sfColor_fromRGBA((sfUint8)255, (sfUint8)255, (sfUint8)255, (sfUint8)45));
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -236,35 +269,51 @@ void gameover_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* GS
         sfRenderWindow_drawText(window, timer2_text, NULL);
     }
 
+    input_gameover_menu(window, play_text, return_text, quit_text, GSettings, highlight);
+
+    sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, return_text, NULL);
     sfRenderWindow_drawText(window, quit_text, NULL);
     sfRenderWindow_drawText(window, score1_text, NULL);
     if (!GSettings->versusmode) sfRenderWindow_drawText(window, timer1_text, NULL);
-
-    input_gameover_menu(window, play_text, return_text, quit_text, GSettings);
 }
 
-void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* quitbutton, struct GameSettings* Gsettings) {
+void input_gameover_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* quitbutton, struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
     sfFloatRect quitrect = sfText_getGlobalBounds(quitbutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
-    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = LAUNCHING;
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) {playrect.width + 15, playrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(playbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = LAUNCHING;
+        }
     }
-    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = MAIN_MENU;
+    if (sfFloatRect_intersects(&returnrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { returnrect.width + 15, returnrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(returnbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = MAIN_MENU;
+        }
     }
-    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        sfRenderWindow_close(window);
+    if (sfFloatRect_intersects(&quitrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { quitrect.width + 15, quitrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(quitbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            sfRenderWindow_close(window);
+        }
     }
 }
 
 void pause_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsettings) {
     float WINDOW_X = sfVideoMode_getDesktopMode().width;
     float ratio_x = WINDOW_X / 2560.0;
+
+    sfRectangleShape* highlight = sfRectangleShape_create();
+    sfRectangleShape_setFillColor(highlight, sfColor_fromRGBA((sfUint8)255, (sfUint8)255, (sfUint8)255, (sfUint8)45));
 
     sfText* title_text = sfText_create();
     sfText_setFont(title_text, font);
@@ -288,22 +337,31 @@ void pause_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* Gsett
     sfRectangleShape_setSize(cover, (sfVector2f) { sfVideoMode_getDesktopMode().width, sfVideoMode_getDesktopMode().height});
     sfRectangleShape_setFillColor(cover, sfColor_fromRGBA((sfUint8)0, (sfUint8)0, (sfUint8)0, (sfUint8)200));
 
+    input_pause_menu(window, play_text, menu_text, Gsettings, highlight);
+
     sfRenderWindow_drawRectangleShape(window, cover, NULL);
+    sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, play_text, NULL);
     sfRenderWindow_drawText(window, menu_text, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);
-
-    input_pause_menu(window, play_text, menu_text, Gsettings);
 }
 
-void input_pause_menu(sfRenderWindow* window, sfText* playbutton, sfText* menubutton, struct GameSettings* Gsettings) {
+void input_pause_menu(sfRenderWindow* window, sfText* playbutton, sfText* menubutton, struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect menurect = sfText_getGlobalBounds(menubutton);
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
-    if (sfFloatRect_intersects(&playrect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = IN_GAME;
+    if (sfFloatRect_intersects(&playrect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { playrect.width + 15, playrect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(playbutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = IN_GAME;
+        }
     }
-    if (sfFloatRect_intersects(&menurect, &mouserect, NULL) && sfMouse_isButtonPressed(sfMouseLeft)) {
-        Gsettings->menu_states = MAIN_MENU;
+    if (sfFloatRect_intersects(&menurect, &mouserect, NULL)) {
+        sfRectangleShape_setSize(highlight, (sfVector2f) { menurect.width + 15, menurect.height + 30 });
+        sfRectangleShape_setPosition(highlight, sfText_getPosition(menubutton));
+        if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            Gsettings->menu_states = MAIN_MENU;
+        }
     }
 }

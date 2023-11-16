@@ -30,12 +30,12 @@ void input_main_menu(window, singlebutton, multibutton, quitbutton, Gsettings, h
 
 void game_mode_menu(window, font, Gsettings);
 
-void input_game_mode_menu(window, playbutton, returnbutton, Gsettings);
+void input_game_mode_menu(window, playbutton, returnbutton, Gsettings, highlight);
 
 void gameover_menu(window, font, GSettings, ship, ship2);
 
-void input_gameover_menu(window, playbutton, returnbutton, Gsettings);
+void input_gameover_menu(window, playbutton, returnbutton, Gsettings, highlight);
 
 void pause_menu(window, font, GSettings);
 
-void input_pause_menu(window, playbutton, menubutton, Gsettings);
+void input_pause_menu(window, playbutton, menubutton, Gsettings, highlight);
