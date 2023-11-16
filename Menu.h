@@ -7,10 +7,14 @@ typedef int bool;
 struct GameSettings {
 	int menu_states;
 	int Nasteroid;
-	bool singleplayer;
-	bool versusmode;
 	int versuswinner;
 	int difficulty;
+
+	//modifiers//
+	bool singleplayer;
+	bool versusmode;
+	bool autoturn;
+	bool no_movement;
 	bool infinite_respawn;
 };
 
