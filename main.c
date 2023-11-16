@@ -87,17 +87,17 @@ void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, 
     HUD(window, Player, Player2, font1, GSettings, WINDOW_X);
 }
 
-void player_controller(struct Ship* Player1, struct Ship* Player2) {
-    if (sfKeyboard_isKeyPressed(sfKeyUp)) {
+void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSettings GSettings) {
+    if (sfKeyboard_isKeyPressed(sfKeyUp) || (sfKeyboard_isKeyPressed(sfKeyZ) && GSettings.singleplayer)) {
         ship_move_toward(Player1);
     }
-    if (sfKeyboard_isKeyPressed(sfKeyRight)) {
+    if (sfKeyboard_isKeyPressed(sfKeyRight) || (sfKeyboard_isKeyPressed(sfKeyD) && GSettings.singleplayer)) {
         Player1 -> angle += Player1 -> angle_speed * delta;
     }
-    if (sfKeyboard_isKeyPressed(sfKeyLeft)) {
+    if (sfKeyboard_isKeyPressed(sfKeyLeft) || (sfKeyboard_isKeyPressed(sfKeyQ) && GSettings.singleplayer)) {
         Player1 -> angle -= Player1 -> angle_speed * delta;
     }
-    if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1 -> heat < 100 && Player1 -> overheat == false) {
+    if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1->heat < 100 && Player1->overheat == false) {
         if (IsButtonPressed(sfKeySpace) == false) {
             ship_shotgun(Player1);
         }
@@ -122,7 +122,7 @@ void player_controller(struct Ship* Player1, struct Ship* Player2) {
 }
 
 void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, int WINDOW_Y, struct GameSettings *GSettings) {
-    if (Player1->dead == false) {
+    if (Player1->dead == false || GSettings->infinite_respawn) {
         ship_movement(Player1);
         ship_oob(Player1, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player1);
@@ -135,7 +135,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
     switch (GSettings->versusmode)
     {
     case true:
-        if (Player2 != NULL) {
+        if (Player2 != NULL && !GSettings->infinite_respawn) {
             if (Player1->life <= 0) {
                 GSettings->versuswinner = 2;
                 GSettings->menu_states = GAMEOVER_MENU;
@@ -147,7 +147,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         }
         break;
     case false:
-        if (Player1->life <= 0 && !GSettings->versusmode) {
+        if (Player1->life <= 0 && !GSettings->infinite_respawn) {
             if (GSettings->singleplayer) {
                 GSettings->menu_states = GAMEOVER_MENU;
             }
@@ -158,7 +158,7 @@ void player_functions(struct Ship* Player1, struct Ship* Player2, int WINDOW_X, 
         break;
     }
 
-    if (Player2 != NULL && Player2->dead == false) {
+    if (Player2 != NULL && (Player2->dead == false || GSettings->infinite_respawn)) {
         ship_movement(Player2);
         ship_oob(Player2, WINDOW_X, WINDOW_Y);
         ship_heat_system(Player2);
@@ -192,11 +192,11 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
         *maxasteroid = 20;
         break;
     case 2: //medium
-        *spawntimer = 2000;
+        *spawntimer = 3000;
         *maxasteroid = 25;
         break;
     case 3: //hard
-        *spawntimer = 3000;
+        *spawntimer = 4000;
         *maxasteroid = 30;
         break;
     }
@@ -294,11 +294,11 @@ void main() {
 
         if (GSettings.menu_states == IN_GAME) {
             if (GSettings.singleplayer) {
-                player_controller(&Player, NULL);
+                player_controller(&Player, NULL, GSettings);
                 player_functions(&Player, NULL, WINDOW_X, WINDOW_Y, &GSettings);
             }
             else {
-                player_controller(&Player, &Player2);
+                player_controller(&Player, &Player2, GSettings);
                 player_functions(&Player, &Player2, WINDOW_X, WINDOW_Y, &GSettings);
             }
 
