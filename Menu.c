@@ -133,10 +133,16 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setPosition(nomovement_text, (sfVector2f) { -sfText_getLocalBounds(nomovement_text).width / 2 + WINDOW_X / 2 * ratio_x, 700 * ratio_x });
     if (Gsettings->no_movement) sfText_setFillColor(nomovement_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
 
+    sfText* BULLET_text = sfText_copy(title_text);
+    sfText_setString(BULLET_text, "BULLET mode");
+    sfText_setCharacterSize(BULLET_text, 50 * ratio_x);
+    sfText_setPosition(BULLET_text, (sfVector2f) { -sfText_getLocalBounds(BULLET_text).width / 2 + WINDOW_X / 2 * ratio_x, 600 * ratio_x });
+    if (Gsettings->BULLET_mode) sfText_setFillColor(BULLET_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
+
     sfText* versus_text = sfText_copy(title_text);
     sfText_setString(versus_text, "Multiplayer only: Versus mode");
     sfText_setCharacterSize(versus_text, 50 * ratio_x);
-    sfText_setPosition(versus_text, (sfVector2f) { -sfText_getLocalBounds(versus_text).width / 2 + WINDOW_X / 2 * ratio_x, 400 * ratio_x });
+    sfText_setPosition(versus_text, (sfVector2f) { -sfText_getLocalBounds(versus_text).width / 2 + WINDOW_X / 2 * ratio_x, 500 * ratio_x });
     if (Gsettings->versusmode) sfText_setFillColor(versus_text, sfColor_fromRGB((sfUint8)255, (sfUint8)0, (sfUint8)0));
 
     sfText* difficulty_text = sfText_create();
@@ -160,7 +166,7 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setPosition(difficulty_text, (sfVector2f) { -sfText_getLocalBounds(difficulty_text).width / 2 + WINDOW_X / 2, 1100 * ratio_x });
 
     input_game_mode_menu(window, play_text, return_text, difficulty_text,
-        infinite_respawn_text, autoturn_text, versus_text, nomovement_text,
+        infinite_respawn_text, autoturn_text, versus_text, nomovement_text, BULLET_text,
         Gsettings, highlight);
 
     sfRenderWindow_drawRectangleShape(window, highlight, NULL);
@@ -173,11 +179,12 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfRenderWindow_drawText(window, infinite_respawn_text, NULL);
     sfRenderWindow_drawText(window, autoturn_text, NULL);
     sfRenderWindow_drawText(window, nomovement_text, NULL);
+    sfRenderWindow_drawText(window, BULLET_text, NULL);
     if (!Gsettings->singleplayer) sfRenderWindow_drawText(window, versus_text, NULL);
 }
 
 void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* returnbutton, sfText* difficultybutton,
-    sfText* infiniteresbutton, sfText* autoturnbutton, sfText* versusbutton, sfText* nomovementbutton,
+    sfText* infiniteresbutton, sfText* autoturnbutton, sfText* versusbutton, sfText* nomovementbutton, sfText* BULLETbutton,
     struct GameSettings* Gsettings, sfRectangleShape* highlight) {
     sfFloatRect playrect = sfText_getGlobalBounds(playbutton);
     sfFloatRect returnrect = sfText_getGlobalBounds(returnbutton);
@@ -187,6 +194,7 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
     sfFloatRect autoturnrect = sfText_getGlobalBounds(autoturnbutton);
     sfFloatRect versusrect = sfText_getGlobalBounds(versusbutton);
     sfFloatRect nomovementrect = sfText_getGlobalBounds(nomovementbutton);
+    sfFloatRect BULLETrect = sfText_getGlobalBounds(BULLETbutton);
 
     sfFloatRect mouserect = (sfFloatRect){ sfMouse_getPosition(window).x, sfMouse_getPosition(window).y, 1, 1 };
     if (sfFloatRect_intersects(&playrect, &mouserect, NULL)) {
@@ -217,6 +225,7 @@ void input_game_mode_menu(sfRenderWindow* window, sfText* playbutton, sfText* re
     button_switch(infiniteresrect, mouserect, infiniteresbutton, highlight, &Gsettings->infinite_respawn);
     button_switch(autoturnrect, mouserect, autoturnbutton, highlight, &Gsettings->autoturn);
     button_switch(nomovementrect, mouserect, nomovementbutton, highlight, &Gsettings->no_movement);
+    button_switch(BULLETrect, mouserect, BULLETbutton, highlight, &Gsettings->BULLET_mode);
     if (!Gsettings->singleplayer) button_switch(versusrect, mouserect, versusbutton, highlight, &Gsettings->versusmode);
 
 }

@@ -15,7 +15,7 @@ struct Bullet {
     struct Ship* from;
 };
 
-void create_bullet(WINDOW_X, WINDOW_Y, position, angle, force, ship);
+void create_bullet(WINDOW_X, WINDOW_Y, position, angle, force, ship, GSettings);
 
 void move_bullets();
 

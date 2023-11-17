@@ -8,6 +8,7 @@
 #include "Deltatime.h"
 #include "Asteroid.h"
 #include "Player.h"
+#include "Menu.h"
 #include "Bullet.h"
 
 typedef int bool;
@@ -17,7 +18,7 @@ typedef int bool;
 #define max_bullet 30
 struct Bullet bullet_list[max_bullet];  
 
-void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force, struct Ship from) {
+void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, int force, struct Ship from, struct GameSettings* GSettings) {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text == NULL || bullet_list[i].dead == true) {
 			bullet_list[i].dead = false;
@@ -33,7 +34,8 @@ void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, i
 			float bullet_force = (WINDOW_X * (float)force / 2560) / 10;
 			bullet_list[i].force = (sfVector2f){ bullet_force * direction_x, bullet_force * direction_y };
 			sfText_setFont(bullet_list[i].text, bullet_list[i].font);
-			sfText_setString(bullet_list[i].text, "I");
+			if (GSettings->BULLET_mode) sfText_setString(bullet_list[i].text, "BULLET");
+			else sfText_setString(bullet_list[i].text, "I");
 			sfText_setCharacterSize(bullet_list[i].text, (float)WINDOW_X * 85.0 / 2560.0);
 			sfText_setOrigin(bullet_list[i].text, (sfVector2f) { sfText_getLocalBounds(bullet_list[i].text).width / 2, sfText_getLocalBounds(bullet_list[i].text).height - (WINDOW_X * 12 / 2560) });
 			break;
@@ -68,10 +70,11 @@ void check_bullets_lifetime() {
 	}
 }
 
-void draw_bullets(sfRenderWindow *window) {
+void draw_bullets(sfRenderWindow *window, struct GameSettings GSettings) {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text != NULL && bullet_list[i].dead == false) {
-			sfText_setRotation(bullet_list[i].text, bullet_list[i].angle);
+			if (GSettings.BULLET_mode) sfText_setRotation(bullet_list[i].text, bullet_list[i].angle + 90);
+			else sfText_setRotation(bullet_list[i].text, bullet_list[i].angle);
 			sfText_setPosition(bullet_list[i].text, bullet_list[i].position);
 			sfTime lifetime = sfClock_getElapsedTime(bullet_list[i].lifetimeclock);
 			int lifetimemilli = sfTime_asMilliseconds(lifetime);

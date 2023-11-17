@@ -82,7 +82,7 @@ void draw_game(sfRenderWindow* window, struct Ship Player, struct Ship Player2, 
     }
 
     draw_asteroids(window);
-    draw_bullets(window);
+    draw_bullets(window, GSettings);
 
     HUD(window, Player, Player2, font1, GSettings, WINDOW_X);
 }
@@ -100,14 +100,14 @@ void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSe
         }
         if (sfKeyboard_isKeyPressed(sfKeySpace) && Player1->heat < 100 && Player1->overheat == false) {
             if (IsButtonPressed(sfKeySpace) == false) {
-                ship_shotgun(Player1);
+                ship_shotgun(Player1, &GSettings);
             }
         }
     }
 
     if (Player2 != NULL) {
         if (sfKeyboard_isKeyPressed(sfKeyZ) && !GSettings.no_movement) {
-            ship_move_toward(Player2);
+            ship_move_toward(Player2, GSettings);
         }
         if (sfKeyboard_isKeyPressed(sfKeyD) || GSettings.autoturn) {
             Player2->angle += Player2->angle_speed * delta;
@@ -117,7 +117,7 @@ void player_controller(struct Ship* Player1, struct Ship* Player2, struct GameSe
         }
         if (sfKeyboard_isKeyPressed(sfKeyLShift) && Player2->heat < 100 && Player2->overheat == false) {
             if (IsButtonPressed(sfKeyLShift) == false) {
-                ship_shotgun(Player2);
+                ship_shotgun(Player2, &GSettings);
             }
         }
     }

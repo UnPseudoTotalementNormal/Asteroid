@@ -7,6 +7,7 @@
 #include "Vector2_tools.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Menu.h"
 #include "Deltatime.h"
 
 typedef int bool;
@@ -58,15 +59,15 @@ void ship_movement(struct Ship ship) {
 	sfText_setRotation(ship.text, ship.angle + 90);
 }
 
-void ship_shotgun(struct Ship ship) {
+void ship_shotgun(struct Ship ship, struct GameSettings* GSettings) {
 	ship.heat += 0.20;
 	sfClock_restart(ship.heat_clock);
 	ship_add_single_force(&ship, (int)ship.angle, (int)ship.recoil_force);
 	int WINDOW_X = sfVideoMode_getDesktopMode().width;
 	int WINDOW_Y = sfVideoMode_getDesktopMode().height;
-	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle), 8, &ship);
-	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle + 25), 8, &ship);
-	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle - 25), 8, &ship);
+	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle), 8, &ship, GSettings);
+	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle + 25), 8, &ship, GSettings);
+	create_bullet(WINDOW_X, WINDOW_Y, ship.position, (int)(ship.angle - 25), 8, &ship, GSettings);
 }
 
 void ship_heat_system(struct Ship ship) {

@@ -16,6 +16,7 @@ struct GameSettings {
 	bool autoturn;
 	bool no_movement;
 	bool infinite_respawn;
+	bool BULLET_mode;
 };
 
 enum MENU_STATES
