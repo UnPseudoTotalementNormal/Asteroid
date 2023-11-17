@@ -64,6 +64,7 @@ void input_main_menu(sfRenderWindow* window, sfText* singlebutton, sfText* multi
         sfRectangleShape_setPosition(highlight, sfText_getPosition(singlebutton));
         if (sfMouse_isButtonPressed(sfMouseLeft)) {
             Gsettings->menu_states = GAME_MODE_MENU;
+            Gsettings->versusmode = false;
             Gsettings->singleplayer = true;
         }
     }
@@ -102,6 +103,16 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     sfText_setString(subtitle_text, "Choose the modifiers:");
     sfText_setCharacterSize(subtitle_text, 90 * ratio_x);
     sfText_setPosition(subtitle_text, (sfVector2f) { -sfText_getLocalBounds(subtitle_text).width / 2 + WINDOW_X / 2, 200 * ratio_x });
+
+    sfSprite* DIRKEY_sprite = sfSprite_create();
+    sfSprite_setTexture(DIRKEY_sprite, sfTexture_createFromFile("Sprites/directionnal_keys.png", NULL), NULL);
+    sfSprite_setScale(DIRKEY_sprite, (sfVector2f) {2 * ratio_x, 2 * ratio_x});
+    sfSprite_setPosition(DIRKEY_sprite, (sfVector2f) { -sfSprite_getLocalBounds(DIRKEY_sprite).width / 2 + 300 * ratio_x, 600 * ratio_x });
+
+    sfSprite* ZQSD_sprite = sfSprite_create();
+    sfSprite_setTexture(ZQSD_sprite, sfTexture_createFromFile("Sprites/ZQSD.png", NULL), NULL);
+    sfSprite_setScale(ZQSD_sprite, (sfVector2f) { 2 * ratio_x, 2 * ratio_x });
+    sfSprite_setPosition(ZQSD_sprite, (sfVector2f) { -sfSprite_getLocalBounds(ZQSD_sprite).width / 2  + WINDOW_X - 600 * ratio_x, 600 * ratio_x });
 
     sfText* play_text = sfText_create();
     sfText_setFont(play_text, font);
@@ -168,6 +179,9 @@ void game_mode_menu(sfRenderWindow* window, sfFont* font, struct GameSettings* G
     input_game_mode_menu(window, play_text, return_text, difficulty_text,
         infinite_respawn_text, autoturn_text, versus_text, nomovement_text, BULLET_text,
         Gsettings, highlight);
+
+    sfRenderWindow_drawSprite(window, DIRKEY_sprite, NULL);
+    if (!Gsettings->singleplayer) sfRenderWindow_drawSprite(window, ZQSD_sprite, NULL);
 
     sfRenderWindow_drawRectangleShape(window, highlight, NULL);
     sfRenderWindow_drawText(window, title_text, NULL);

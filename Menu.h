@@ -36,7 +36,7 @@ void input_main_menu(window, singlebutton, multibutton, quitbutton, Gsettings, h
 void game_mode_menu(window, font, Gsettings);
 
 void input_game_mode_menu(window, playbutton, returnbutton, 
-	infiniteresbutton,										//modifier here
+	infiniteresbutton, autoturnbutton, versusbutton, nomovementbutton, BULLETbutton,								//modifier here
 	Gsettings, highlight);
 
 void gameover_menu(window, font, GSettings, ship, ship2);
