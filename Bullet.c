@@ -9,6 +9,7 @@
 #include "Asteroid.h"
 #include "Player.h"
 #include "Menu.h"
+#include "font.h"
 #include "Bullet.h"
 
 typedef int bool;
@@ -22,7 +23,7 @@ void create_bullet(int WINDOW_X, int WINDOW_Y, sfVector2f position, int angle, i
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text == NULL || bullet_list[i].dead == true) {
 			bullet_list[i].dead = false;
-			bullet_list[i].font = sfFont_createFromFile("Font/Ubuntu.ttf");
+			bullet_list[i].font = font_ubuntu;
 			bullet_list[i].text = sfText_create();
 			bullet_list[i].position = position;
 			bullet_list[i].angle = angle + 90;
@@ -123,7 +124,6 @@ void DestroyAllBullets() {
 	for (int i = 0; i < max_bullet; i++) {
 		if (bullet_list[i].text != NULL) {
 			sfText_destroy(bullet_list[i].text);
-			sfFont_destroy(bullet_list[i].font);
 			sfClock_destroy(bullet_list[i].lifetimeclock);
 			bullet_list[i].text = NULL;
 		}

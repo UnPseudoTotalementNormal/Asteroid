@@ -12,6 +12,7 @@
 #include "Deltatime.h"
 #include "ButtonPress.h"
 #include "Menu.h"
+#include "Font.h"
 
 typedef int bool;
 #define true 1
@@ -226,8 +227,9 @@ void launch_game(struct GameSettings* GSettings, struct Ship *Player1, struct Sh
 void main() {
     srand(time(0));
     InitDelta();
+    create_fonts();
 
-    sfFont* font1 = sfFont_createFromFile("Font/RetroGaming.ttf");
+    sfFont* font1 = font_retrogaming;
 
     int WINDOW_X = sfVideoMode_getDesktopMode().width;
     int WINDOW_Y = sfVideoMode_getDesktopMode().height;
